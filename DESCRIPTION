@@ -1,6 +1,6 @@
 Package: MolgenisArmadillo
 Type: Package
-Version: 1.0.0
+Version: 1.0.1
 Title: Armadillo Client for the Armadillo Service
 Description: A set of functions to be able to manage data shared on a
   'MOLGENIS Armadillo' storage server ('MinIO').
@@ -27,8 +27,7 @@ Authors@R:
              comment = c(ORCID = "0000-0002-0979-3401")))
 Maintainer: Fleur Kelpin <f.kelpin@umcg.nl>
 Depends: R (>= 3.6)
-Imports: rlang, httr, urltools, xml2, aws.iam, aws.s3, MolgenisAuth,
-        arrow
+Imports: httr, urltools, xml2, aws.iam, aws.s3, MolgenisAuth, arrow
 Suggests: knitr, testthat, mockery, datasets, tibble, rmarkdown,
         DSMolgenisArmadillo
 License: LGPL (>= 2.1)
@@ -39,10 +38,10 @@ RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2021-01-27 16:09:46 UTC; root
+Packaged: 2021-02-08 16:43:00 UTC; root
 Author: Sido Haakma [aut] (<https://orcid.org/0000-0003-1278-9144>),
   Tommy de Boer [aut] (<https://orcid.org/0000-0002-4492-7225>),
   Fleur Kelpin [aut, cre] (<https://orcid.org/0000-0003-1527-5130>),
   Morris Swertz [aut] (<https://orcid.org/0000-0002-0979-3401>)
 Repository: CRAN
-Date/Publication: 2021-02-04 15:10:03 UTC
+Date/Publication: 2021-02-09 00:40:14 UTC

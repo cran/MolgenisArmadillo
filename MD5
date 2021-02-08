@@ -1,6 +1,6 @@
-985a46dfe56ac6cec3e34e425ecf331b *DESCRIPTION
+c172ef52a035a77d009f401f0e9bd74f *DESCRIPTION
 91bc2765a71acad05b684c9d2892d364 *NAMESPACE
-f012146d11e258f03f523538ee410007 *NEWS.md
+e9d2ad7512fdab27553c356e9a55c47c *NEWS.md
 e0ef681901465d24f47f9139cb2c086a *R/MolgenisArmadillo-package.R
 8d746667df0386cc363b43cf2717016e *R/auth.R
 a01d9f436853015df8b3761126b80a42 *R/names.R
@@ -43,7 +43,7 @@ d55904542a13c0ab9930b2a4bf94f370 *man/dot-load_table.Rd
 2cf1a99c3ffa833a3f972214e66342b1 *tests/testthat/helper.R
 5c8e8bed339ede24a5cf5174c8c8561b *tests/testthat/test-auth.R
 a7ee8832af975cd854568546a0222527 *tests/testthat/test-names.R
-f754aa31450077021e8e95a9688d4ffe *tests/testthat/test-object.R
+be3efafee9f05e78544efabbcc119ade *tests/testthat/test-object.R
 c4a75a2b31a5ce9324282c1c7d7adf20 *tests/testthat/test-project.R
 0fefd5f6d2e25ba8e95f1d468a014f64 *tests/testthat/test-resource.R
 b61418d311fd30a419f2f87c221095c1 *tests/testthat/test-table.R
