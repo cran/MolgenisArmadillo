@@ -14,22 +14,7 @@
 
 <title>Creating data subsets</title>
 
-<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
-// v0.0.1
-// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
-
-document.addEventListener('DOMContentLoaded', function() {
-  const codeList = document.getElementsByClassName("sourceCode");
-  for (var i = 0; i < codeList.length; i++) {
-    var linkList = codeList[i].getElementsByTagName('a');
-    for (var j = 0; j < linkList.length; j++) {
-      if (linkList[j].innerHTML === "") {
-        linkList[j].setAttribute('aria-hidden', 'true');
-      }
-    }
-  }
-});
-</script>
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -41,21 +26,28 @@ document.addEventListener('DOMContentLoaded', function() {
     </style>
 
 
-<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
 <style type="text/css" data-origin="pandoc">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -75,7 +67,7 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-le
 div.sourceCode
   {   }
 @media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -133,187 +125,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<style type="text/css">body {
-background-color: #fff;
-margin: 1em auto;
-max-width: 700px;
-overflow: visible;
-padding-left: 2em;
-padding-right: 2em;
-font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-font-size: 14px;
-line-height: 1.35;
-}
-#TOC {
-clear: both;
-margin: 0 0 10px 10px;
-padding: 4px;
-width: 400px;
-border: 1px solid #CCCCCC;
-border-radius: 5px;
-background-color: #f6f6f6;
-font-size: 13px;
-line-height: 1.3;
-}
-#TOC .toctitle {
-font-weight: bold;
-font-size: 15px;
-margin-left: 5px;
-}
-#TOC ul {
-padding-left: 40px;
-margin-left: -1.5em;
-margin-top: 5px;
-margin-bottom: 5px;
-}
-#TOC ul ul {
-margin-left: -2em;
-}
-#TOC li {
-line-height: 16px;
-}
-table {
-margin: 1em auto;
-border-width: 1px;
-border-color: #DDDDDD;
-border-style: outset;
-border-collapse: collapse;
-}
-table th {
-border-width: 2px;
-padding: 5px;
-border-style: inset;
-}
-table td {
-border-width: 1px;
-border-style: inset;
-line-height: 18px;
-padding: 5px 5px;
-}
-table, table th, table td {
-border-left-style: none;
-border-right-style: none;
-}
-table thead, table tr.even {
-background-color: #f7f7f7;
-}
-p {
-margin: 0.5em 0;
-}
-blockquote {
-background-color: #f6f6f6;
-padding: 0.25em 0.75em;
-}
-hr {
-border-style: solid;
-border: none;
-border-top: 1px solid #777;
-margin: 28px 0;
-}
-dl {
-margin-left: 0;
-}
-dl dd {
-margin-bottom: 13px;
-margin-left: 13px;
-}
-dl dt {
-font-weight: bold;
-}
-ul {
-margin-top: 0;
-}
-ul li {
-list-style: circle outside;
-}
-ul ul {
-margin-bottom: 0;
-}
-pre, code {
-background-color: #f7f7f7;
-border-radius: 3px;
-color: #333;
-white-space: pre-wrap; 
-}
-pre {
-border-radius: 3px;
-margin: 5px 0px 10px 0px;
-padding: 10px;
-}
-pre:not([class]) {
-background-color: #f7f7f7;
-}
-code {
-font-family: Consolas, Monaco, 'Courier New', monospace;
-font-size: 85%;
-}
-p > code, li > code {
-padding: 2px 0px;
-}
-div.figure {
-text-align: center;
-}
-img {
-background-color: #FFFFFF;
-padding: 2px;
-border: 1px solid #DDDDDD;
-border-radius: 3px;
-border: 1px solid #CCCCCC;
-margin: 0 5px;
-}
-h1 {
-margin-top: 0;
-font-size: 35px;
-line-height: 40px;
-}
-h2 {
-border-bottom: 4px solid #f7f7f7;
-padding-top: 10px;
-padding-bottom: 2px;
-font-size: 145%;
-}
-h3 {
-border-bottom: 2px solid #f7f7f7;
-padding-top: 10px;
-font-size: 120%;
-}
-h4 {
-border-bottom: 1px solid #f7f7f7;
-margin-left: 8px;
-font-size: 105%;
-}
-h5, h6 {
-border-bottom: 1px solid #ccc;
-font-size: 105%;
-}
-a {
-color: #0033dd;
-text-decoration: none;
-}
-a:hover {
-color: #6666ff; }
-a:visited {
-color: #800080; }
-a:visited:hover {
-color: #BB00BB; }
-a[href^="http:"] {
-text-decoration: underline; }
-a[href^="https:"] {
-text-decoration: underline; }
-
-code > span.kw { color: #555; font-weight: bold; } 
-code > span.dt { color: #902000; } 
-code > span.dv { color: #40a070; } 
-code > span.bn { color: #d14; } 
-code > span.fl { color: #d14; } 
-code > span.ch { color: #d14; } 
-code > span.st { color: #d14; } 
-code > span.co { color: #888888; font-style: italic; } 
-code > span.ot { color: #007020; } 
-code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; } 
-code > span.er { color: #a61717; background-color: #e3d2d2; } 
-</style>
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
 
 
 
@@ -329,146 +141,146 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(MolgenisArmadillo)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(dplyr)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MolgenisArmadillo)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
 <p>When researchers request access to your data they may in many cases not be granted access to the whole dataset, but only to a subset. On the MinIO fileserver access is regulated on the project level, so you will need to create a new project using a subset of the data. Here you can see the different relevant steps you need to take to create these subsets.</p>
 <div id="logging-in" class="section level2">
 <h2>Logging in</h2>
 <p>In order to access the files on the MinIO fileserver you need to log in using the URLs of the Armadillo server and the MinIO fileserver. A browser window will be opened where you can identify yourself with the ID provider.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">armadillo.login</span>(<span class="st">&quot;https://armadillo.test.molgenis.org&quot;</span>,</span>
-<span id="cb2-2"><a href="#cb2-2"></a>      <span class="st">&quot;https://armadillo-minio.test.molgenis.org&quot;</span>)</span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="co">#&gt; [1] &quot;We&#39;re opening a browser so you can log in with code 5K2S2N&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.login</span>(<span class="st">&quot;https://armadillo.test.molgenis.org&quot;</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;https://armadillo-minio.test.molgenis.org&quot;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;We&#39;re opening a browser so you can log in with code 5K2S2N&quot;</span></span></code></pre></div>
 <p>A session will be created and the credentials are stored in the environment.</p>
 </div>
 <div id="sharing-data" class="section level2">
 <h2>Sharing data</h2>
 <p>Let’s assume you are in a consortium which has core-variables and outcome-variables. You want to share a subset of the whole dataset with certain researchers that applied for access to your data.</p>
 <p>First we will create a project, here called ‘subset1’.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">armadillo.create_project</span>(<span class="st">&quot;subset1&quot;</span>)</span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="co">#&gt; Created project &#39;subset1&#39;</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.create_project</span>(<span class="st">&quot;subset1&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Created project &#39;subset1&#39;</span></span></code></pre></div>
 <p>#list projects on the MinIO file server</p>
 <p>Secondly we will explore the data and find the relevant variables to share.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">armadillo.list_projects</span>()</span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="co">#&gt; [1] &quot;cohort1&quot;            &quot;cohort2&quot;            &quot;cohort3&quot;            &quot;dnbc&quot;              </span></span>
-<span id="cb4-3"><a href="#cb4-3"></a><span class="co">#&gt; [5] &quot;example-dictionary&quot; &quot;exampledictionary&quot;  &quot;methylationclocks&quot;  &quot;subset1&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.list_projects</span>()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;cohort1&quot;            &quot;cohort2&quot;            &quot;cohort3&quot;            &quot;dnbc&quot;              </span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [5] &quot;example-dictionary&quot; &quot;exampledictionary&quot;  &quot;methylationclocks&quot;  &quot;subset1&quot;</span></span></code></pre></div>
 <p>#List the tables in a project</p>
 <p>You want to share data from ‘cohort1’. We will list the available tables within this project.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">armadillo.list_tables</span>(<span class="st">&quot;cohort1&quot;</span>)</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="co">#&gt; [1] &quot;1_1-outcome-1_0/nonrep&quot;    &quot;1_1-outcome-1_0/yearlyrep&quot; &quot;2_1-core-1_0/monthlyrep&quot;  </span></span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="co">#&gt; [4] &quot;2_1-core-1_0/nonrep&quot;       &quot;2_1-core-1_0/trimesterrep&quot; &quot;2_1-core-1_0/yearlyrep&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.list_tables</span>(<span class="st">&quot;cohort1&quot;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;1_1-outcome-1_0/nonrep&quot;    &quot;1_1-outcome-1_0/yearlyrep&quot; &quot;2_1-core-1_0/monthlyrep&quot;  </span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4] &quot;2_1-core-1_0/nonrep&quot;       &quot;2_1-core-1_0/trimesterrep&quot; &quot;2_1-core-1_0/yearlyrep&quot;</span></span></code></pre></div>
 <p>##Making subsets of the data Since the core and outcome data tables have the same names we will first subset the outcome variables and afterwards subset the core variables.</p>
 <p>#Subset the outcome variables We will now download the outcome tables to the local environment</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>non_rep &lt;-<span class="st"> </span><span class="kw">armadillo.load_table</span>(<span class="st">&quot;cohort1&quot;</span>, <span class="st">&quot;1_1-outcome-1_0&quot;</span>, <span class="st">&quot;nonrep&quot;</span>)</span>
-<span id="cb6-2"><a href="#cb6-2"></a>yearly_rep &lt;-<span class="st"> </span><span class="kw">armadillo.load_table</span>(<span class="st">&quot;cohort1&quot;</span>, <span class="st">&quot;1_1-outcome-1_0&quot;</span>, <span class="st">&quot;yearlyrep&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>non_rep <span class="ot">&lt;-</span> <span class="fu">armadillo.load_table</span>(<span class="st">&quot;cohort1&quot;</span>, <span class="st">&quot;1_1-outcome-1_0&quot;</span>, <span class="st">&quot;nonrep&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>yearly_rep <span class="ot">&lt;-</span> <span class="fu">armadillo.load_table</span>(<span class="st">&quot;cohort1&quot;</span>, <span class="st">&quot;1_1-outcome-1_0&quot;</span>, <span class="st">&quot;yearlyrep&quot;</span>)</span></code></pre></div>
 <p>, list their variables</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">colnames</span>(non_rep)</span>
-<span id="cb7-2"><a href="#cb7-2"></a><span class="co">#&gt;  [1] &quot;row_id&quot;                &quot;child_id&quot;              &quot;pets_preg&quot;            </span></span>
-<span id="cb7-3"><a href="#cb7-3"></a><span class="co">#&gt;  [4] &quot;asthma_ever_CHICOS&quot;    &quot;asthma_ever_MeDALL&quot;    &quot;asthma_current_MeDALL&quot;</span></span>
-<span id="cb7-4"><a href="#cb7-4"></a><span class="co">#&gt;  [7] &quot;asthma_current_ISAAC&quot;  &quot;allergy_any_m&quot;         &quot;allergy_inh_m&quot;        </span></span>
-<span id="cb7-5"><a href="#cb7-5"></a><span class="co">#&gt; [10] &quot;anaphylaxis&quot;</span></span>
-<span id="cb7-6"><a href="#cb7-6"></a><span class="kw">colnames</span>(yearly_rep)</span>
-<span id="cb7-7"><a href="#cb7-7"></a><span class="co">#&gt;  [1] &quot;row_id&quot;                  &quot;child_id&quot;                &quot;age_years&quot;              </span></span>
-<span id="cb7-8"><a href="#cb7-8"></a><span class="co">#&gt;  [4] &quot;whe_&quot;                    &quot;asthma_&quot;                 &quot;asthma_med_&quot;            </span></span>
-<span id="cb7-9"><a href="#cb7-9"></a><span class="co">#&gt;  [7] &quot;asthma_med_spec_&quot;        &quot;FEV1_z_&quot;                 &quot;FVC_z_&quot;                 </span></span>
-<span id="cb7-10"><a href="#cb7-10"></a><span class="co">#&gt; [10] &quot;FEV1FVC_z_&quot;              &quot;repro_&quot;                  &quot;FeNO_&quot;                  </span></span>
-<span id="cb7-11"><a href="#cb7-11"></a><span class="co">#&gt; [13] &quot;inh_all_sens_SPT_&quot;       &quot;inh_all_sens_IgE_HDM_&quot;   &quot;inh_all_sens_IgE_CAT_&quot;  </span></span>
-<span id="cb7-12"><a href="#cb7-12"></a><span class="co">#&gt; [16] &quot;inh_all_sens_IgE_RYE_&quot;   &quot;inh_all_sens_IgE_MOULD_&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(non_rep)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;row_id&quot;                &quot;child_id&quot;              &quot;pets_preg&quot;            </span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [4] &quot;asthma_ever_CHICOS&quot;    &quot;asthma_ever_MeDALL&quot;    &quot;asthma_current_MeDALL&quot;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [7] &quot;asthma_current_ISAAC&quot;  &quot;allergy_any_m&quot;         &quot;allergy_inh_m&quot;        </span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [10] &quot;anaphylaxis&quot;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(yearly_rep)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;row_id&quot;                  &quot;child_id&quot;                &quot;age_years&quot;              </span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [4] &quot;whe_&quot;                    &quot;asthma_&quot;                 &quot;asthma_med_&quot;            </span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [7] &quot;asthma_med_spec_&quot;        &quot;FEV1_z_&quot;                 &quot;FVC_z_&quot;                 </span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [10] &quot;FEV1FVC_z_&quot;              &quot;repro_&quot;                  &quot;FeNO_&quot;                  </span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [13] &quot;inh_all_sens_SPT_&quot;       &quot;inh_all_sens_IgE_HDM_&quot;   &quot;inh_all_sens_IgE_CAT_&quot;  </span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [16] &quot;inh_all_sens_IgE_RYE_&quot;   &quot;inh_all_sens_IgE_MOULD_&quot;</span></span></code></pre></div>
 <p>, and subset the variables that were requested.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>subset_outcome_non_rep &lt;-<span class="st"> </span>non_rep <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(child_id, pets_preg, asthma_ever_CHICOS)</span>
-<span id="cb8-2"><a href="#cb8-2"></a></span>
-<span id="cb8-3"><a href="#cb8-3"></a>subset_outcome_yearly_rep &lt;-<span class="st"> </span>yearly_rep <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(child_id, asthma_med_)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>subset_outcome_non_rep <span class="ot">&lt;-</span> non_rep <span class="sc">%&gt;%</span> <span class="fu">select</span>(child_id, pets_preg, asthma_ever_CHICOS)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>subset_outcome_yearly_rep <span class="ot">&lt;-</span> yearly_rep <span class="sc">%&gt;%</span> <span class="fu">select</span>(child_id, asthma_med_)</span></code></pre></div>
 <p>#Subset the core variables We will now download the relevant core tables to the local environment</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>non_rep &lt;-<span class="st"> </span><span class="kw">armadillo.load_table</span>(<span class="st">&quot;cohort1&quot;</span>, <span class="st">&quot;2_1-core-1_0&quot;</span>, <span class="st">&quot;nonrep&quot;</span>)</span>
-<span id="cb9-2"><a href="#cb9-2"></a>yearly_rep &lt;-<span class="st"> </span><span class="kw">armadillo.load_table</span>(<span class="st">&quot;cohort1&quot;</span>, <span class="st">&quot;2_1-core-1_0&quot;</span>, <span class="st">&quot;yearlyrep&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>non_rep <span class="ot">&lt;-</span> <span class="fu">armadillo.load_table</span>(<span class="st">&quot;cohort1&quot;</span>, <span class="st">&quot;2_1-core-1_0&quot;</span>, <span class="st">&quot;nonrep&quot;</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>yearly_rep <span class="ot">&lt;-</span> <span class="fu">armadillo.load_table</span>(<span class="st">&quot;cohort1&quot;</span>, <span class="st">&quot;2_1-core-1_0&quot;</span>, <span class="st">&quot;yearlyrep&quot;</span>)</span></code></pre></div>
 <p>, list their variables</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">colnames</span>(non_rep)</span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="co">#&gt;   [1] &quot;row_id&quot;              &quot;child_id&quot;            &quot;mother_id&quot;           &quot;cohort_id&quot;          </span></span>
-<span id="cb10-3"><a href="#cb10-3"></a><span class="co">#&gt;   [5] &quot;preg_no&quot;             &quot;child_no&quot;            &quot;coh_country&quot;         &quot;recruit_age&quot;        </span></span>
-<span id="cb10-4"><a href="#cb10-4"></a><span class="co">#&gt;   [9] &quot;cob_m&quot;               &quot;ethn1_m&quot;             &quot;ethn2_m&quot;             &quot;ethn3_m&quot;            </span></span>
-<span id="cb10-5"><a href="#cb10-5"></a><span class="co">#&gt;  [13] &quot;agebirth_m_y&quot;        &quot;agebirth_m_d&quot;        &quot;death_m&quot;             &quot;death_m_age&quot;        </span></span>
-<span id="cb10-6"><a href="#cb10-6"></a><span class="co">#&gt;  [17] &quot;prepreg_weight&quot;      &quot;prepreg_weight_mes&quot;  &quot;prepreg_weight_ga&quot;   &quot;latepreg_weight&quot;    </span></span>
-<span id="cb10-7"><a href="#cb10-7"></a><span class="co">#&gt;  [21] &quot;latepreg_weight_mes&quot; &quot;latepreg_weight_ga&quot;  &quot;preg_gain&quot;           &quot;preg_gain_mes&quot;      </span></span>
-<span id="cb10-8"><a href="#cb10-8"></a><span class="co">#&gt;  [25] &quot;height_m&quot;            &quot;height_mes_m&quot;        &quot;prepreg_dia&quot;         &quot;preg_dia&quot;           </span></span>
-<span id="cb10-9"><a href="#cb10-9"></a><span class="co">#&gt;  [29] &quot;preg_thyroid&quot;        &quot;preg_fever&quot;          &quot;preeclam&quot;            &quot;preg_ht&quot;            </span></span>
-<span id="cb10-10"><a href="#cb10-10"></a><span class="co">#&gt;  [33] &quot;asthma_m&quot;            &quot;prepreg_psych&quot;       &quot;preg_psych&quot;          &quot;ppd&quot;                </span></span>
-<span id="cb10-11"><a href="#cb10-11"></a><span class="co">#&gt;  [37] &quot;prepreg_smk&quot;         &quot;prepreg_cig&quot;         &quot;preg_smk&quot;            &quot;preg_cig&quot;           </span></span>
-<span id="cb10-12"><a href="#cb10-12"></a><span class="co">#&gt;  [41] &quot;prepreg_alc&quot;         &quot;prepreg_alc_unit&quot;    &quot;preg_alc&quot;            &quot;preg_alc_unit&quot;      </span></span>
-<span id="cb10-13"><a href="#cb10-13"></a><span class="co">#&gt;  [45] &quot;folic_prepreg&quot;       &quot;folic_preg12&quot;        &quot;folic_post12&quot;        &quot;parity_m&quot;           </span></span>
-<span id="cb10-14"><a href="#cb10-14"></a><span class="co">#&gt;  [49] &quot;preg_plan&quot;           &quot;mar&quot;                 &quot;ivf&quot;                 &quot;outcome&quot;            </span></span>
-<span id="cb10-15"><a href="#cb10-15"></a><span class="co">#&gt;  [53] &quot;mode_delivery&quot;       &quot;plac_abrup&quot;          &quot;cob_p&quot;               &quot;cob_p_fath&quot;         </span></span>
-<span id="cb10-16"><a href="#cb10-16"></a><span class="co">#&gt;  [57] &quot;ethn1_p&quot;             &quot;ethn2_p&quot;             &quot;ethn3_p&quot;             &quot;ethn_p_fath&quot;        </span></span>
-<span id="cb10-17"><a href="#cb10-17"></a><span class="co">#&gt;  [61] &quot;agebirth_p_y&quot;        &quot;agebirth_p_d&quot;        &quot;agebirth_p_fath&quot;     &quot;death_p&quot;            </span></span>
-<span id="cb10-18"><a href="#cb10-18"></a><span class="co">#&gt;  [65] &quot;death_p_age&quot;         &quot;death_p_fath&quot;        &quot;weight_f1&quot;           &quot;weight_mes_f1&quot;      </span></span>
-<span id="cb10-19"><a href="#cb10-19"></a><span class="co">#&gt;  [69] &quot;weight_f1_fath&quot;      &quot;height_f1&quot;           &quot;height_mes_f1&quot;       &quot;height_f1_fath&quot;     </span></span>
-<span id="cb10-20"><a href="#cb10-20"></a><span class="co">#&gt;  [73] &quot;dia_bf&quot;              &quot;asthma_bf&quot;           &quot;psych_bf&quot;            &quot;smk_p&quot;              </span></span>
-<span id="cb10-21"><a href="#cb10-21"></a><span class="co">#&gt;  [77] &quot;smk_cig_p&quot;           &quot;smk_fath&quot;            &quot;birth_month&quot;         &quot;birth_year&quot;         </span></span>
-<span id="cb10-22"><a href="#cb10-22"></a><span class="co">#&gt;  [81] &quot;apgar&quot;               &quot;neo_unit&quot;            &quot;sex&quot;                 &quot;plurality&quot;          </span></span>
-<span id="cb10-23"><a href="#cb10-23"></a><span class="co">#&gt;  [85] &quot;ga_lmp&quot;              &quot;ga_us&quot;               &quot;ga_mr&quot;               &quot;ga_bj&quot;              </span></span>
-<span id="cb10-24"><a href="#cb10-24"></a><span class="co">#&gt;  [89] &quot;birth_weight&quot;        &quot;birth_length&quot;        &quot;birth_head_circum&quot;   &quot;weight_who_ga&quot;      </span></span>
-<span id="cb10-25"><a href="#cb10-25"></a><span class="co">#&gt;  [93] &quot;plac_weight&quot;         &quot;con_anomalies&quot;       &quot;major_con_anomalies&quot; &quot;cer_palsy&quot;          </span></span>
-<span id="cb10-26"><a href="#cb10-26"></a><span class="co">#&gt;  [97] &quot;sibling_pos&quot;         &quot;death_child&quot;         &quot;death_child_age&quot;     &quot;breastfed_excl&quot;     </span></span>
-<span id="cb10-27"><a href="#cb10-27"></a><span class="co">#&gt; [101] &quot;breastfed_any&quot;       &quot;breastfed_ever&quot;      &quot;solid_food&quot;          &quot;childcare_intro&quot;    </span></span>
-<span id="cb10-28"><a href="#cb10-28"></a><span class="co">#&gt; [105] &quot;cats_preg&quot;           &quot;dogs_preg&quot;           &quot;cats_quant_preg&quot;     &quot;dogs_quant_preg&quot;</span></span>
-<span id="cb10-29"><a href="#cb10-29"></a><span class="kw">colnames</span>(yearly_rep)</span>
-<span id="cb10-30"><a href="#cb10-30"></a><span class="co">#&gt;  [1] &quot;row_id&quot;            &quot;child_id&quot;          &quot;age_years&quot;         &quot;cohab_&quot;           </span></span>
-<span id="cb10-31"><a href="#cb10-31"></a><span class="co">#&gt;  [5] &quot;occup_m_&quot;          &quot;occupcode_m_&quot;      &quot;edu_m_&quot;            &quot;occup_f1_&quot;        </span></span>
-<span id="cb10-32"><a href="#cb10-32"></a><span class="co">#&gt;  [9] &quot;occup_f1_fath&quot;     &quot;occup_f2_&quot;         &quot;occup_f2_fath&quot;     &quot;occupcode_f1_&quot;    </span></span>
-<span id="cb10-33"><a href="#cb10-33"></a><span class="co">#&gt; [13] &quot;occupcode_f1_fath&quot; &quot;occupcode_f2_&quot;     &quot;occupcode_f2_fath&quot; &quot;edu_f1_&quot;          </span></span>
-<span id="cb10-34"><a href="#cb10-34"></a><span class="co">#&gt; [17] &quot;edu_f1_fath&quot;       &quot;edu_f2_&quot;           &quot;edu_f2_fath&quot;       &quot;childcare_&quot;       </span></span>
-<span id="cb10-35"><a href="#cb10-35"></a><span class="co">#&gt; [21] &quot;childcarerel_&quot;     &quot;childcareprof_&quot;    &quot;childcarecentre_&quot;  &quot;smk_exp&quot;          </span></span>
-<span id="cb10-36"><a href="#cb10-36"></a><span class="co">#&gt; [25] &quot;pets_&quot;             &quot;cats_&quot;             &quot;cats_quant_&quot;       &quot;dogs_&quot;            </span></span>
-<span id="cb10-37"><a href="#cb10-37"></a><span class="co">#&gt; [29] &quot;dogs_quant_&quot;       &quot;mental_exp&quot;        &quot;hhincome_&quot;         &quot;fam_splitup&quot;      </span></span>
-<span id="cb10-38"><a href="#cb10-38"></a><span class="co">#&gt; [33] &quot;famsize_child&quot;     &quot;famsize_adult&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(non_rep)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   [1] &quot;row_id&quot;              &quot;child_id&quot;            &quot;mother_id&quot;           &quot;cohort_id&quot;          </span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   [5] &quot;preg_no&quot;             &quot;child_no&quot;            &quot;coh_country&quot;         &quot;recruit_age&quot;        </span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   [9] &quot;cob_m&quot;               &quot;ethn1_m&quot;             &quot;ethn2_m&quot;             &quot;ethn3_m&quot;            </span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [13] &quot;agebirth_m_y&quot;        &quot;agebirth_m_d&quot;        &quot;death_m&quot;             &quot;death_m_age&quot;        </span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [17] &quot;prepreg_weight&quot;      &quot;prepreg_weight_mes&quot;  &quot;prepreg_weight_ga&quot;   &quot;latepreg_weight&quot;    </span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [21] &quot;latepreg_weight_mes&quot; &quot;latepreg_weight_ga&quot;  &quot;preg_gain&quot;           &quot;preg_gain_mes&quot;      </span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [25] &quot;height_m&quot;            &quot;height_mes_m&quot;        &quot;prepreg_dia&quot;         &quot;preg_dia&quot;           </span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [29] &quot;preg_thyroid&quot;        &quot;preg_fever&quot;          &quot;preeclam&quot;            &quot;preg_ht&quot;            </span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [33] &quot;asthma_m&quot;            &quot;prepreg_psych&quot;       &quot;preg_psych&quot;          &quot;ppd&quot;                </span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [37] &quot;prepreg_smk&quot;         &quot;prepreg_cig&quot;         &quot;preg_smk&quot;            &quot;preg_cig&quot;           </span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [41] &quot;prepreg_alc&quot;         &quot;prepreg_alc_unit&quot;    &quot;preg_alc&quot;            &quot;preg_alc_unit&quot;      </span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [45] &quot;folic_prepreg&quot;       &quot;folic_preg12&quot;        &quot;folic_post12&quot;        &quot;parity_m&quot;           </span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [49] &quot;preg_plan&quot;           &quot;mar&quot;                 &quot;ivf&quot;                 &quot;outcome&quot;            </span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [53] &quot;mode_delivery&quot;       &quot;plac_abrup&quot;          &quot;cob_p&quot;               &quot;cob_p_fath&quot;         </span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [57] &quot;ethn1_p&quot;             &quot;ethn2_p&quot;             &quot;ethn3_p&quot;             &quot;ethn_p_fath&quot;        </span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [61] &quot;agebirth_p_y&quot;        &quot;agebirth_p_d&quot;        &quot;agebirth_p_fath&quot;     &quot;death_p&quot;            </span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [65] &quot;death_p_age&quot;         &quot;death_p_fath&quot;        &quot;weight_f1&quot;           &quot;weight_mes_f1&quot;      </span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [69] &quot;weight_f1_fath&quot;      &quot;height_f1&quot;           &quot;height_mes_f1&quot;       &quot;height_f1_fath&quot;     </span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [73] &quot;dia_bf&quot;              &quot;asthma_bf&quot;           &quot;psych_bf&quot;            &quot;smk_p&quot;              </span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [77] &quot;smk_cig_p&quot;           &quot;smk_fath&quot;            &quot;birth_month&quot;         &quot;birth_year&quot;         </span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [81] &quot;apgar&quot;               &quot;neo_unit&quot;            &quot;sex&quot;                 &quot;plurality&quot;          </span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [85] &quot;ga_lmp&quot;              &quot;ga_us&quot;               &quot;ga_mr&quot;               &quot;ga_bj&quot;              </span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [89] &quot;birth_weight&quot;        &quot;birth_length&quot;        &quot;birth_head_circum&quot;   &quot;weight_who_ga&quot;      </span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [93] &quot;plac_weight&quot;         &quot;con_anomalies&quot;       &quot;major_con_anomalies&quot; &quot;cer_palsy&quot;          </span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [97] &quot;sibling_pos&quot;         &quot;death_child&quot;         &quot;death_child_age&quot;     &quot;breastfed_excl&quot;     </span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [101] &quot;breastfed_any&quot;       &quot;breastfed_ever&quot;      &quot;solid_food&quot;          &quot;childcare_intro&quot;    </span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [105] &quot;cats_preg&quot;           &quot;dogs_preg&quot;           &quot;cats_quant_preg&quot;     &quot;dogs_quant_preg&quot;</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(yearly_rep)</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;row_id&quot;            &quot;child_id&quot;          &quot;age_years&quot;         &quot;cohab_&quot;           </span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [5] &quot;occup_m_&quot;          &quot;occupcode_m_&quot;      &quot;edu_m_&quot;            &quot;occup_f1_&quot;        </span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [9] &quot;occup_f1_fath&quot;     &quot;occup_f2_&quot;         &quot;occup_f2_fath&quot;     &quot;occupcode_f1_&quot;    </span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [13] &quot;occupcode_f1_fath&quot; &quot;occupcode_f2_&quot;     &quot;occupcode_f2_fath&quot; &quot;edu_f1_&quot;          </span></span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [17] &quot;edu_f1_fath&quot;       &quot;edu_f2_&quot;           &quot;edu_f2_fath&quot;       &quot;childcare_&quot;       </span></span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [21] &quot;childcarerel_&quot;     &quot;childcareprof_&quot;    &quot;childcarecentre_&quot;  &quot;smk_exp&quot;          </span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [25] &quot;pets_&quot;             &quot;cats_&quot;             &quot;cats_quant_&quot;       &quot;dogs_&quot;            </span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [29] &quot;dogs_quant_&quot;       &quot;mental_exp&quot;        &quot;hhincome_&quot;         &quot;fam_splitup&quot;      </span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [33] &quot;famsize_child&quot;     &quot;famsize_adult&quot;</span></span></code></pre></div>
 <p>, and subset the variables that were requested.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>subset_core_non_rep &lt;-<span class="st"> </span>non_rep <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(child_id, asthma_m, breastfed_any)</span>
-<span id="cb11-2"><a href="#cb11-2"></a></span>
-<span id="cb11-3"><a href="#cb11-3"></a>subset_core_yearly_rep &lt;-<span class="st"> </span>yearly_rep <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(child_id, pets_)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>subset_core_non_rep <span class="ot">&lt;-</span> non_rep <span class="sc">%&gt;%</span> <span class="fu">select</span>(child_id, asthma_m, breastfed_any)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>subset_core_yearly_rep <span class="ot">&lt;-</span> yearly_rep <span class="sc">%&gt;%</span> <span class="fu">select</span>(child_id, pets_)</span></code></pre></div>
 <p>##Uploading the data subset</p>
 <p>#Check the data subset before uploading</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">colnames</span>(subset_outcome_non_rep)</span>
-<span id="cb12-2"><a href="#cb12-2"></a><span class="co">#&gt; [1] &quot;child_id&quot;           &quot;pets_preg&quot;          &quot;asthma_ever_CHICOS&quot;</span></span>
-<span id="cb12-3"><a href="#cb12-3"></a><span class="kw">colnames</span>(subset_outcome_yearly_rep)</span>
-<span id="cb12-4"><a href="#cb12-4"></a><span class="co">#&gt; [1] &quot;child_id&quot;    &quot;asthma_med_&quot;</span></span>
-<span id="cb12-5"><a href="#cb12-5"></a><span class="kw">colnames</span>(subset_core_non_rep)</span>
-<span id="cb12-6"><a href="#cb12-6"></a><span class="co">#&gt; [1] &quot;child_id&quot;      &quot;asthma_m&quot;      &quot;breastfed_any&quot;</span></span>
-<span id="cb12-7"><a href="#cb12-7"></a><span class="kw">colnames</span>(subset_core_yearly_rep)</span>
-<span id="cb12-8"><a href="#cb12-8"></a><span class="co">#&gt; [1] &quot;child_id&quot; &quot;pets_&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(subset_outcome_non_rep)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;child_id&quot;           &quot;pets_preg&quot;          &quot;asthma_ever_CHICOS&quot;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(subset_outcome_yearly_rep)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;child_id&quot;    &quot;asthma_med_&quot;</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(subset_core_non_rep)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;child_id&quot;      &quot;asthma_m&quot;      &quot;breastfed_any&quot;</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(subset_core_yearly_rep)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;child_id&quot; &quot;pets_&quot;</span></span></code></pre></div>
 <p>#Upload the data subset</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw">armadillo.upload_table</span>(<span class="st">&quot;subset1&quot;</span>, <span class="st">&quot;1_1_outcome_1_0&quot;</span>, subset_outcome_non_rep, <span class="st">&quot;non_rep&quot;</span>)</span>
-<span id="cb13-2"><a href="#cb13-2"></a><span class="co">#&gt; Compressing...</span></span>
-<span id="cb13-3"><a href="#cb13-3"></a><span class="co">#&gt; </span></span>
-<span id="cb13-4"><a href="#cb13-4"></a>  <span class="op">|</span><span class="st">                                                                                              </span></span>
-<span id="cb13-5"><a href="#cb13-5"></a><span class="st">  </span><span class="er">|</span><span class="st">                                                                                        </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%</span>
-<span id="cb13-6"><a href="#cb13-6"></a>  <span class="op">|</span><span class="st">                                                                                              </span></span>
-<span id="cb13-7"><a href="#cb13-7"></a><span class="st">  </span><span class="er">|========================================================================================|</span><span class="st"> </span><span class="dv">100</span>%</span>
-<span id="cb13-8"><a href="#cb13-8"></a><span class="co">#&gt; Uploaded 1_1_outcome_1_0/non_rep</span></span>
-<span id="cb13-9"><a href="#cb13-9"></a></span>
-<span id="cb13-10"><a href="#cb13-10"></a><span class="kw">armadillo.upload_table</span>(<span class="st">&quot;subset1&quot;</span>, <span class="st">&quot;1_1_outcome_1_0&quot;</span>, subset_outcome_yearly_rep, <span class="st">&quot;yearly_rep&quot;</span>)</span>
-<span id="cb13-11"><a href="#cb13-11"></a><span class="co">#&gt; Compressing...</span></span>
-<span id="cb13-12"><a href="#cb13-12"></a><span class="co">#&gt; </span></span>
-<span id="cb13-13"><a href="#cb13-13"></a>  <span class="op">|</span><span class="st">                                                                                              </span></span>
-<span id="cb13-14"><a href="#cb13-14"></a><span class="st">  </span><span class="er">|</span><span class="st">                                                                                        </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%</span>
-<span id="cb13-15"><a href="#cb13-15"></a>  <span class="op">|</span><span class="st">                                                                                              </span></span>
-<span id="cb13-16"><a href="#cb13-16"></a><span class="st">  </span><span class="er">|========================================================================================|</span><span class="st"> </span><span class="dv">100</span>%</span>
-<span id="cb13-17"><a href="#cb13-17"></a><span class="co">#&gt; Uploaded 1_1_outcome_1_0/yearly_rep</span></span>
-<span id="cb13-18"><a href="#cb13-18"></a></span>
-<span id="cb13-19"><a href="#cb13-19"></a><span class="kw">armadillo.upload_table</span>(<span class="st">&quot;subset1&quot;</span>, <span class="st">&quot;2_1_core_1_0&quot;</span>, subset_core_non_rep, <span class="st">&quot;non_rep&quot;</span>)</span>
-<span id="cb13-20"><a href="#cb13-20"></a><span class="co">#&gt; Compressing...</span></span>
-<span id="cb13-21"><a href="#cb13-21"></a><span class="co">#&gt; </span></span>
-<span id="cb13-22"><a href="#cb13-22"></a>  <span class="op">|</span><span class="st">                                                                                              </span></span>
-<span id="cb13-23"><a href="#cb13-23"></a><span class="st">  </span><span class="er">|</span><span class="st">                                                                                        </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%</span>
-<span id="cb13-24"><a href="#cb13-24"></a>  <span class="op">|</span><span class="st">                                                                                              </span></span>
-<span id="cb13-25"><a href="#cb13-25"></a><span class="st">  </span><span class="er">|========================================================================================|</span><span class="st"> </span><span class="dv">100</span>%</span>
-<span id="cb13-26"><a href="#cb13-26"></a><span class="co">#&gt; Uploaded 2_1_core_1_0/non_rep</span></span>
-<span id="cb13-27"><a href="#cb13-27"></a></span>
-<span id="cb13-28"><a href="#cb13-28"></a><span class="kw">armadillo.upload_table</span>(<span class="st">&quot;subset1&quot;</span>, <span class="st">&quot;2_1_core_1_0&quot;</span>, subset_core_yearly_rep, <span class="st">&quot;yearly_rep&quot;</span>)</span>
-<span id="cb13-29"><a href="#cb13-29"></a><span class="co">#&gt; Compressing...</span></span>
-<span id="cb13-30"><a href="#cb13-30"></a><span class="co">#&gt; </span></span>
-<span id="cb13-31"><a href="#cb13-31"></a>  <span class="op">|</span><span class="st">                                                                                              </span></span>
-<span id="cb13-32"><a href="#cb13-32"></a><span class="st">  </span><span class="er">|</span><span class="st">                                                                                        </span><span class="er">|</span><span class="st">   </span><span class="dv">0</span>%</span>
-<span id="cb13-33"><a href="#cb13-33"></a>  <span class="op">|</span><span class="st">                                                                                              </span></span>
-<span id="cb13-34"><a href="#cb13-34"></a><span class="st">  </span><span class="er">|========================================================================================|</span><span class="st"> </span><span class="dv">100</span>%</span>
-<span id="cb13-35"><a href="#cb13-35"></a><span class="co">#&gt; Uploaded 2_1_core_1_0/yearly_rep</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.upload_table</span>(<span class="st">&quot;subset1&quot;</span>, <span class="st">&quot;1_1_outcome_1_0&quot;</span>, subset_outcome_non_rep, <span class="st">&quot;non_rep&quot;</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>                                                                                        <span class="er">|</span>   <span class="dv">0</span>%</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="er">|========================================================================================|</span> <span class="dv">100</span>%</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded 1_1_outcome_1_0/non_rep</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.upload_table</span>(<span class="st">&quot;subset1&quot;</span>, <span class="st">&quot;1_1_outcome_1_0&quot;</span>, subset_outcome_yearly_rep, <span class="st">&quot;yearly_rep&quot;</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>                                                                                        <span class="er">|</span>   <span class="dv">0</span>%</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="er">|========================================================================================|</span> <span class="dv">100</span>%</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded 1_1_outcome_1_0/yearly_rep</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.upload_table</span>(<span class="st">&quot;subset1&quot;</span>, <span class="st">&quot;2_1_core_1_0&quot;</span>, subset_core_non_rep, <span class="st">&quot;non_rep&quot;</span>)</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>                                                                                        <span class="er">|</span>   <span class="dv">0</span>%</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>  <span class="er">|========================================================================================|</span> <span class="dv">100</span>%</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded 2_1_core_1_0/non_rep</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.upload_table</span>(<span class="st">&quot;subset1&quot;</span>, <span class="st">&quot;2_1_core_1_0&quot;</span>, subset_core_yearly_rep, <span class="st">&quot;yearly_rep&quot;</span>)</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>                                                                                        <span class="er">|</span>   <span class="dv">0</span>%</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>  <span class="er">|========================================================================================|</span> <span class="dv">100</span>%</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded 2_1_core_1_0/yearly_rep</span></span></code></pre></div>
 <p>Now you can also take a look at the files in the user interface of the MinIO fileserver if you open the MinIO server URL in a browser window.</p>
 </div>
 

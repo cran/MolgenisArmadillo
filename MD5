@@ -1,6 +1,6 @@
-c172ef52a035a77d009f401f0e9bd74f *DESCRIPTION
+4582dc75f2b107c52b1640703f90ba6e *DESCRIPTION
 91bc2765a71acad05b684c9d2892d364 *NAMESPACE
-e9d2ad7512fdab27553c356e9a55c47c *NEWS.md
+9ff6b1f9144172c5c4bbc1495b1d0238 *NEWS.md
 e0ef681901465d24f47f9139cb2c086a *R/MolgenisArmadillo-package.R
 8d746667df0386cc363b43cf2717016e *R/auth.R
 a01d9f436853015df8b3761126b80a42 *R/names.R
@@ -9,13 +9,13 @@ f87bf3683d3f980c761ac47378239aa5 *R/project.R
 5c09f49804461d8c3baecf33ce97c660 *R/resource.R
 74d6fa3008eb3306863f3f40063fd9be *R/table.R
 2486fe3b4b0615cd6bc1b599e90c55c0 *R/utils.R
-a82002505fd40a0f5f2601c9529955ca *README.md
+ff28ab03d661eac43e8c2ca7adf0fe34 *README.md
 fbbbfd039ec05fbc37ba4fc49f6546ae *build/vignette.rds
 709edceb9c07ccfe33a3d81a7ebd0014 *inst/doc/MolgenisArmadillo.Rmd
-d82ed05906c45e52cea9b1263a9d7f2c *inst/doc/MolgenisArmadillo.html
+80279a6a0a32c5bcf8040811097ca0d3 *inst/doc/MolgenisArmadillo.html
 5abeac906a4dd73d1adf7b9d8c137ac3 *inst/doc/creating_data_subsets.Rmd
-37ced7ddb0524090ef46c2e285440692 *inst/doc/creating_data_subsets.html
-f0e579ad3e1fa037a7a3275600ca8c22 *man/MolgenisArmadillo-package.Rd
+ddf4e06b4903104eddc6d9b4efedafea *inst/doc/creating_data_subsets.html
+4ac57caba91a63768e3bf424bed57551 *man/MolgenisArmadillo-package.Rd
 81e6b95240fb95139959d1502cbdabbc *man/armadillo.assume_role_with_web_identity.Rd
 f158ba0117ecdee1c6144e32b6a0d3c5 *man/armadillo.copy_resource.Rd
 8a4b94ea453925e225eaaefbda72e2da *man/armadillo.copy_table.Rd
