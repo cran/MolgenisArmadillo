@@ -329,7 +329,8 @@ test_that(".load_object loads the object from file", {
           name = "test",
           load_function = load_table,
           extension = ".parquet"
-        )},
+        )
+      },
       "tempfile" = function() {
         file
       },
