@@ -1,3 +1,5 @@
+# MolgenisArmadillo 2.0.0
+
 # MolgenisArmadillo 1.1.3
 
 # MolgenisArmadillo 1.1.2
