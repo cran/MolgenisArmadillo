@@ -1,6 +1,6 @@
 Package: MolgenisArmadillo
 Type: Package
-Version: 2.0.0
+Version: 2.1.2
 Title: Armadillo Client for the Armadillo Service
 Description: A set of functions to manage data shared on a 
   'MOLGENIS Armadillo' server.
@@ -34,9 +34,10 @@ Authors@R:
       )
 Maintainer: Mariska Slofstra <m.k.slofstra@umcg.nl>
 Depends: R (>= 3.6)
-Imports: base64enc, httr, urltools, MolgenisAuth (>= 0.0.25), arrow
+Imports: base64enc, httr, urltools, dplyr, purrr, stringr, tidyr,
+        tibble, MolgenisAuth (>= 0.0.25), arrow
 Suggests: stringi, withr, knitr, testthat, webmockr, mockery, datasets,
-        tibble, rmarkdown, DSMolgenisArmadillo
+        rmarkdown, DSMolgenisArmadillo
 License: LGPL (>= 2.1)
 URL: https://github.com/molgenis/molgenis-r-armadillo/,
         https://molgenis.github.io/molgenis-r-armadillo/
@@ -45,11 +46,11 @@ RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2023-02-23 13:28:42 UTC; root
+Packaged: 2023-10-27 13:21:41 UTC; root
 Author: Mariska Slofstra [aut, cre] (<https://orcid.org/0000-0002-0400-0468>),
   Sido Haakma [aut] (<https://orcid.org/0000-0003-1278-9144>),
   Tommy de Boer [aut] (<https://orcid.org/0000-0002-4492-7225>),
   Fleur Kelpin [aut] (<https://orcid.org/0000-0003-1527-5130>),
   Morris Swertz [aut] (<https://orcid.org/0000-0002-0979-3401>)
 Repository: CRAN
-Date/Publication: 2023-02-23 15:22:30 UTC
+Date/Publication: 2023-10-27 13:50:02 UTC

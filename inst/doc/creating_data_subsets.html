@@ -26,7 +26,6 @@
     </style>
 
 
-
 <style type="text/css">
   code {
     white-space: pre;
@@ -108,20 +107,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    var j = 0;
-    while (j < rules.length) {
+    for (var j = 0; j < rules.length; j++) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
-        j++;
-        continue;
-      }
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') {
-        j++;
-        continue;
-      }
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -149,147 +141,113 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MolgenisArmadillo)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
-<p>When researchers request access to your data they may in many cases not be granted access to the whole dataset, but only to a subset. On the MinIO fileserver access is regulated on the project level, so you will need to create a new project using a subset of the data. Here you can see the different relevant steps you need to take to create these subsets.</p>
+<p>When researchers request access to your data they may in many cases not be granted access to the whole dataset, but only to a subset. In Armadilllo, access is regulated on the project level, so you will need to create a new project using a subset of the data. Here are the required steps to create these subsets.</p>
+<div id="install-and-load-the-package" class="section level2">
+<h2>Install and load the package</h2>
+<p>You need to install and load the package first to be able to create the subsets.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;MolgenisArmadillo&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MolgenisArmadillo)</span></code></pre></div>
+</div>
 <div id="logging-in" class="section level2">
 <h2>Logging in</h2>
-<p>In order to access the files on the MinIO fileserver you need to log in using the URLs of the Armadillo server and the MinIO fileserver. A browser window will be opened where you can identify yourself with the ID provider.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.login</span>(<span class="st">&quot;https://armadillo.test.molgenis.org&quot;</span>,</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;https://armadillo-minio.test.molgenis.org&quot;</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;We&#39;re opening a browser so you can log in with code 5K2S2N&quot;</span></span></code></pre></div>
+<p>In order to access the files you need to log in using the URL of the Armadillo server. A browser window will be opened where you can identify yourself with the ID provider.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.login</span>(<span class="st">&quot;https://armadillo-demo.molgenis.net/&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;We&#39;re opening a browser so you can log in with code 8T3ND2&quot;</span></span></code></pre></div>
 <p>A session will be created and the credentials are stored in the environment.</p>
 </div>
-<div id="sharing-data" class="section level2">
-<h2>Sharing data</h2>
-<p>Let’s assume you are in a consortium which has core-variables and outcome-variables. You want to share a subset of the whole dataset with certain researchers that applied for access to your data.</p>
-<p>First we will create a project, here called ‘subset1’.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.create_project</span>(<span class="st">&quot;subset1&quot;</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Created project &#39;subset1&#39;</span></span></code></pre></div>
-<p>#list projects on the MinIO file server</p>
-<p>Secondly we will explore the data and find the relevant variables to share.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.list_projects</span>()</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;cohort1&quot;            &quot;cohort2&quot;            &quot;cohort3&quot;            &quot;dnbc&quot;              </span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [5] &quot;example-dictionary&quot; &quot;exampledictionary&quot;  &quot;methylationclocks&quot;  &quot;subset1&quot;</span></span></code></pre></div>
-<p>#List the tables in a project</p>
-<p>You want to share data from ‘cohort1’. We will list the available tables within this project.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.list_tables</span>(<span class="st">&quot;cohort1&quot;</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;1_1-outcome-1_0/nonrep&quot;    &quot;1_1-outcome-1_0/yearlyrep&quot; &quot;2_1-core-1_0/monthlyrep&quot;  </span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4] &quot;2_1-core-1_0/nonrep&quot;       &quot;2_1-core-1_0/trimesterrep&quot; &quot;2_1-core-1_0/yearlyrep&quot;</span></span></code></pre></div>
-<p>##Making subsets of the data Since the core and outcome data tables have the same names we will first subset the outcome variables and afterwards subset the core variables.</p>
-<p>#Subset the outcome variables We will now download the outcome tables to the local environment</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>non_rep <span class="ot">&lt;-</span> <span class="fu">armadillo.load_table</span>(<span class="st">&quot;cohort1&quot;</span>, <span class="st">&quot;1_1-outcome-1_0&quot;</span>, <span class="st">&quot;nonrep&quot;</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>yearly_rep <span class="ot">&lt;-</span> <span class="fu">armadillo.load_table</span>(<span class="st">&quot;cohort1&quot;</span>, <span class="st">&quot;1_1-outcome-1_0&quot;</span>, <span class="st">&quot;yearlyrep&quot;</span>)</span></code></pre></div>
-<p>, list their variables</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(non_rep)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;row_id&quot;                &quot;child_id&quot;              &quot;pets_preg&quot;            </span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [4] &quot;asthma_ever_CHICOS&quot;    &quot;asthma_ever_MeDALL&quot;    &quot;asthma_current_MeDALL&quot;</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [7] &quot;asthma_current_ISAAC&quot;  &quot;allergy_any_m&quot;         &quot;allergy_inh_m&quot;        </span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [10] &quot;anaphylaxis&quot;</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(yearly_rep)</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;row_id&quot;                  &quot;child_id&quot;                &quot;age_years&quot;              </span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [4] &quot;whe_&quot;                    &quot;asthma_&quot;                 &quot;asthma_med_&quot;            </span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [7] &quot;asthma_med_spec_&quot;        &quot;FEV1_z_&quot;                 &quot;FVC_z_&quot;                 </span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [10] &quot;FEV1FVC_z_&quot;              &quot;repro_&quot;                  &quot;FeNO_&quot;                  </span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [13] &quot;inh_all_sens_SPT_&quot;       &quot;inh_all_sens_IgE_HDM_&quot;   &quot;inh_all_sens_IgE_CAT_&quot;  </span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [16] &quot;inh_all_sens_IgE_RYE_&quot;   &quot;inh_all_sens_IgE_MOULD_&quot;</span></span></code></pre></div>
-<p>, and subset the variables that were requested.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>subset_outcome_non_rep <span class="ot">&lt;-</span> non_rep <span class="sc">%&gt;%</span> <span class="fu">select</span>(child_id, pets_preg, asthma_ever_CHICOS)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>subset_outcome_yearly_rep <span class="ot">&lt;-</span> yearly_rep <span class="sc">%&gt;%</span> <span class="fu">select</span>(child_id, asthma_med_)</span></code></pre></div>
-<p>#Subset the core variables We will now download the relevant core tables to the local environment</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>non_rep <span class="ot">&lt;-</span> <span class="fu">armadillo.load_table</span>(<span class="st">&quot;cohort1&quot;</span>, <span class="st">&quot;2_1-core-1_0&quot;</span>, <span class="st">&quot;nonrep&quot;</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>yearly_rep <span class="ot">&lt;-</span> <span class="fu">armadillo.load_table</span>(<span class="st">&quot;cohort1&quot;</span>, <span class="st">&quot;2_1-core-1_0&quot;</span>, <span class="st">&quot;yearlyrep&quot;</span>)</span></code></pre></div>
-<p>, list their variables</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(non_rep)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   [1] &quot;row_id&quot;              &quot;child_id&quot;            &quot;mother_id&quot;           &quot;cohort_id&quot;          </span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   [5] &quot;preg_no&quot;             &quot;child_no&quot;            &quot;coh_country&quot;         &quot;recruit_age&quot;        </span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   [9] &quot;cob_m&quot;               &quot;ethn1_m&quot;             &quot;ethn2_m&quot;             &quot;ethn3_m&quot;            </span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [13] &quot;agebirth_m_y&quot;        &quot;agebirth_m_d&quot;        &quot;death_m&quot;             &quot;death_m_age&quot;        </span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [17] &quot;prepreg_weight&quot;      &quot;prepreg_weight_mes&quot;  &quot;prepreg_weight_ga&quot;   &quot;latepreg_weight&quot;    </span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [21] &quot;latepreg_weight_mes&quot; &quot;latepreg_weight_ga&quot;  &quot;preg_gain&quot;           &quot;preg_gain_mes&quot;      </span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [25] &quot;height_m&quot;            &quot;height_mes_m&quot;        &quot;prepreg_dia&quot;         &quot;preg_dia&quot;           </span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [29] &quot;preg_thyroid&quot;        &quot;preg_fever&quot;          &quot;preeclam&quot;            &quot;preg_ht&quot;            </span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [33] &quot;asthma_m&quot;            &quot;prepreg_psych&quot;       &quot;preg_psych&quot;          &quot;ppd&quot;                </span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [37] &quot;prepreg_smk&quot;         &quot;prepreg_cig&quot;         &quot;preg_smk&quot;            &quot;preg_cig&quot;           </span></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [41] &quot;prepreg_alc&quot;         &quot;prepreg_alc_unit&quot;    &quot;preg_alc&quot;            &quot;preg_alc_unit&quot;      </span></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [45] &quot;folic_prepreg&quot;       &quot;folic_preg12&quot;        &quot;folic_post12&quot;        &quot;parity_m&quot;           </span></span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [49] &quot;preg_plan&quot;           &quot;mar&quot;                 &quot;ivf&quot;                 &quot;outcome&quot;            </span></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [53] &quot;mode_delivery&quot;       &quot;plac_abrup&quot;          &quot;cob_p&quot;               &quot;cob_p_fath&quot;         </span></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [57] &quot;ethn1_p&quot;             &quot;ethn2_p&quot;             &quot;ethn3_p&quot;             &quot;ethn_p_fath&quot;        </span></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [61] &quot;agebirth_p_y&quot;        &quot;agebirth_p_d&quot;        &quot;agebirth_p_fath&quot;     &quot;death_p&quot;            </span></span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [65] &quot;death_p_age&quot;         &quot;death_p_fath&quot;        &quot;weight_f1&quot;           &quot;weight_mes_f1&quot;      </span></span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [69] &quot;weight_f1_fath&quot;      &quot;height_f1&quot;           &quot;height_mes_f1&quot;       &quot;height_f1_fath&quot;     </span></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [73] &quot;dia_bf&quot;              &quot;asthma_bf&quot;           &quot;psych_bf&quot;            &quot;smk_p&quot;              </span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [77] &quot;smk_cig_p&quot;           &quot;smk_fath&quot;            &quot;birth_month&quot;         &quot;birth_year&quot;         </span></span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [81] &quot;apgar&quot;               &quot;neo_unit&quot;            &quot;sex&quot;                 &quot;plurality&quot;          </span></span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [85] &quot;ga_lmp&quot;              &quot;ga_us&quot;               &quot;ga_mr&quot;               &quot;ga_bj&quot;              </span></span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [89] &quot;birth_weight&quot;        &quot;birth_length&quot;        &quot;birth_head_circum&quot;   &quot;weight_who_ga&quot;      </span></span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [93] &quot;plac_weight&quot;         &quot;con_anomalies&quot;       &quot;major_con_anomalies&quot; &quot;cer_palsy&quot;          </span></span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [97] &quot;sibling_pos&quot;         &quot;death_child&quot;         &quot;death_child_age&quot;     &quot;breastfed_excl&quot;     </span></span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [101] &quot;breastfed_any&quot;       &quot;breastfed_ever&quot;      &quot;solid_food&quot;          &quot;childcare_intro&quot;    </span></span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [105] &quot;cats_preg&quot;           &quot;dogs_preg&quot;           &quot;cats_quant_preg&quot;     &quot;dogs_quant_preg&quot;</span></span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(yearly_rep)</span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;row_id&quot;            &quot;child_id&quot;          &quot;age_years&quot;         &quot;cohab_&quot;           </span></span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [5] &quot;occup_m_&quot;          &quot;occupcode_m_&quot;      &quot;edu_m_&quot;            &quot;occup_f1_&quot;        </span></span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [9] &quot;occup_f1_fath&quot;     &quot;occup_f2_&quot;         &quot;occup_f2_fath&quot;     &quot;occupcode_f1_&quot;    </span></span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [13] &quot;occupcode_f1_fath&quot; &quot;occupcode_f2_&quot;     &quot;occupcode_f2_fath&quot; &quot;edu_f1_&quot;          </span></span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [17] &quot;edu_f1_fath&quot;       &quot;edu_f2_&quot;           &quot;edu_f2_fath&quot;       &quot;childcare_&quot;       </span></span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [21] &quot;childcarerel_&quot;     &quot;childcareprof_&quot;    &quot;childcarecentre_&quot;  &quot;smk_exp&quot;          </span></span>
-<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [25] &quot;pets_&quot;             &quot;cats_&quot;             &quot;cats_quant_&quot;       &quot;dogs_&quot;            </span></span>
-<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [29] &quot;dogs_quant_&quot;       &quot;mental_exp&quot;        &quot;hhincome_&quot;         &quot;fam_splitup&quot;      </span></span>
-<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [33] &quot;famsize_child&quot;     &quot;famsize_adult&quot;</span></span></code></pre></div>
-<p>, and subset the variables that were requested.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>subset_core_non_rep <span class="ot">&lt;-</span> non_rep <span class="sc">%&gt;%</span> <span class="fu">select</span>(child_id, asthma_m, breastfed_any)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>subset_core_yearly_rep <span class="ot">&lt;-</span> yearly_rep <span class="sc">%&gt;%</span> <span class="fu">select</span>(child_id, pets_)</span></code></pre></div>
-<p>##Uploading the data subset</p>
-<p>#Check the data subset before uploading</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(subset_outcome_non_rep)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;child_id&quot;           &quot;pets_preg&quot;          &quot;asthma_ever_CHICOS&quot;</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(subset_outcome_yearly_rep)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;child_id&quot;    &quot;asthma_med_&quot;</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(subset_core_non_rep)</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;child_id&quot;      &quot;asthma_m&quot;      &quot;breastfed_any&quot;</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(subset_core_yearly_rep)</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;child_id&quot; &quot;pets_&quot;</span></span></code></pre></div>
-<p>#Upload the data subset</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.upload_table</span>(<span class="st">&quot;subset1&quot;</span>, <span class="st">&quot;1_1_outcome_1_0&quot;</span>, subset_outcome_non_rep, <span class="st">&quot;non_rep&quot;</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>                                                                                        <span class="er">|</span>   <span class="dv">0</span>%</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="er">|========================================================================================|</span> <span class="dv">100</span>%</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded 1_1_outcome_1_0/non_rep</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.upload_table</span>(<span class="st">&quot;subset1&quot;</span>, <span class="st">&quot;1_1_outcome_1_0&quot;</span>, subset_outcome_yearly_rep, <span class="st">&quot;yearly_rep&quot;</span>)</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>                                                                                        <span class="er">|</span>   <span class="dv">0</span>%</span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="er">|========================================================================================|</span> <span class="dv">100</span>%</span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded 1_1_outcome_1_0/yearly_rep</span></span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.upload_table</span>(<span class="st">&quot;subset1&quot;</span>, <span class="st">&quot;2_1_core_1_0&quot;</span>, subset_core_non_rep, <span class="st">&quot;non_rep&quot;</span>)</span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>                                                                                        <span class="er">|</span>   <span class="dv">0</span>%</span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>  <span class="er">|========================================================================================|</span> <span class="dv">100</span>%</span>
-<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded 2_1_core_1_0/non_rep</span></span>
-<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.upload_table</span>(<span class="st">&quot;subset1&quot;</span>, <span class="st">&quot;2_1_core_1_0&quot;</span>, subset_core_yearly_rep, <span class="st">&quot;yearly_rep&quot;</span>)</span>
-<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
-<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>                                                                                        <span class="er">|</span>   <span class="dv">0</span>%</span>
-<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                              </span>
-<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>  <span class="er">|========================================================================================|</span> <span class="dv">100</span>%</span>
-<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded 2_1_core_1_0/yearly_rep</span></span></code></pre></div>
-<p>Now you can also take a look at the files in the user interface of the MinIO fileserver if you open the MinIO server URL in a browser window.</p>
+<div id="defining-the-subset" class="section level2">
+<h2>Defining the subset</h2>
+<p>Let’s assume you are in a consortium which has data that can not be shared in total to the researchers. You want to share a subset of the whole dataset with certain researchers that applied for access to your data.</p>
+<p>For each research project, we need to define a .csv file containing 3 columns:</p>
+<table>
+<thead>
+<tr class="header">
+<th>folder</th>
+<th>table</th>
+<th>variable</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2_1_core_1_0</td>
+<td>yearly_rep</td>
+<td>green_dist_</td>
+</tr>
+<tr class="even">
+<td>2_1_core_1_0</td>
+<td>yearly_rep</td>
+<td>green_size_</td>
+</tr>
+<tr class="odd">
+<td>2_1_core_1_0</td>
+<td>yearly_rep</td>
+<td>green_access_</td>
+</tr>
+</tbody>
+</table>
+<p>‘folder’ refers a folder within the master project; ‘table’ refers to the name of a table within this folder, and ‘variable’ refers to one or more variables within this table. Note that these columns need to be named exactly as above.</p>
+<p>If you defined the tables then you can construct the <code>subset_definition</code>. This creates a tibble within R holding the details from the .csv file.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>subset_definition <span class="ot">&lt;-</span> <span class="fu">armadillo.subset_definition</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">vars =</span> <span class="st">&quot;data/subset/vars.csv&quot;</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>subset_definition</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 3</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   folder          table     vars_to_subset   </span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;           &lt;chr&gt;     &lt;list&gt;           </span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 2_1-core-1_0    yearlyrep &lt;tibble [15 × 1]&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 1_1-outcome-1_0 yearlyrep &lt;tibble [9 × 1]&gt; </span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 2_1-core-1_0    nonrep    &lt;tibble [7 × 1]&gt;</span></span></code></pre></div>
+<p>After this you can create a new subset using the subset method on the Armadillo. First we are going to perform a dry-run to check whether the required folder, tables and variables are present.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>not_available <span class="ot">&lt;-</span> <span class="fu">armadillo.subset</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">source_project =</span> <span class="st">&quot;gecko&quot;</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_project =</span> <span class="st">&quot;study1&quot;</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">subset_def =</span> subset_definition,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">dry_run =</span> <span class="cn">TRUE</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>not_available</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 23 × 3</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    folder       table     missing      </span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;        &lt;chr&gt;     &lt;chr&gt;        </span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 2_1-core-1_0 yearlyrep green_dist_  </span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 2_1-core-1_0 yearlyrep green_size_  </span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 2_1-core-1_0 yearlyrep green_access_</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 2_1-core-1_0 yearlyrep ndvi100_     </span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 2_1-core-1_0 yearlyrep ndvi300_     </span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 2_1-core-1_0 yearlyrep ndvi500_     </span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 2_1-core-1_0 yearlyrep blue_dist_   </span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 2_1-core-1_0 yearlyrep blue_size_   </span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 2_1-core-1_0 yearlyrep blue_access_ </span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 2_1-core-1_0 yearlyrep no2_         </span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 13 more rows</span></span></code></pre></div>
+<p>This outputs a tibble with details of any variables that are missing within the actual data. You can check whether you suspected this or this is an anomaly.</p>
+<p>If you are confident that it will work you can run the subset method without dry_run.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.subset</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">source_project =</span> <span class="st">&quot;gecko&quot;</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_project =</span> <span class="st">&quot;study1&quot;</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">subset_def =</span> subset_definition, </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">dry_run =</span> <span class="cn">FALSE</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Created project &#39;study1&#39;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded 2_1-core-1_0/yearlyrep</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded 1_1-outcome-1_0/yearlyrep</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded 2_1-core-1_0/nonrep</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 23 × 3</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    folder       table     missing      </span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;        &lt;chr&gt;     &lt;chr&gt;        </span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 2_1-core-1_0 yearlyrep green_dist_  </span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 2_1-core-1_0 yearlyrep green_size_  </span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 2_1-core-1_0 yearlyrep green_access_</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 2_1-core-1_0 yearlyrep ndvi100_     </span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 2_1-core-1_0 yearlyrep ndvi300_     </span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 2_1-core-1_0 yearlyrep ndvi500_     </span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 2_1-core-1_0 yearlyrep blue_dist_   </span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 2_1-core-1_0 yearlyrep blue_size_   </span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 2_1-core-1_0 yearlyrep blue_access_ </span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 2_1-core-1_0 yearlyrep no2_         </span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 13 more rows</span></span></code></pre></div>
+<p>Now you can also take a look at the files in the armadillo user interface, if you open it in a browser window.</p>
 </div>
 
 

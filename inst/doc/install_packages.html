@@ -26,7 +26,6 @@
     </style>
 
 
-
 <style type="text/css">
   code {
     white-space: pre;
@@ -108,20 +107,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    var j = 0;
-    while (j < rules.length) {
+    for (var j = 0; j < rules.length; j++) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
-        j++;
-        continue;
-      }
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') {
-        j++;
-        continue;
-      }
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -160,14 +152,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>You first need to login to the Armadillo (as <code>superuser</code>)</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.login</span>(<span class="st">&quot;https://armadillo.dev.molgenis.org&quot;</span>,</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;https://armadillo-minio.dev.molgenis.org&quot;</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;We&#39;re opening a browser so you can log in with code B56HHX&quot;</span></span></code></pre></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in armadillo.login(&quot;https://armadillo.dev.molgenis.org&quot;, &quot;https://armadillo-minio.dev.molgenis.org&quot;): unused argument (&quot;https://armadillo-minio.dev.molgenis.org&quot;)</span></span></code></pre></div>
 </div>
 <div id="install-packages" class="section level2">
 <h2>Install packages</h2>
 <p>If you want to install a package on the Armadillo Rserver you can execute the following endpoint. The selected profile is always <code>default</code> if none is specified.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.install_packages</span>(<span class="st">&quot;data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz&quot;</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Attempting to install package [ &#39;data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz&#39; ]</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Package [ &#39;data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz&#39; ] installed</span></span></code></pre></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in httr::upload_file(path): file.exists(path) is not TRUE</span></span></code></pre></div>
 <p>In order to install the packages on a specific profile you can specify the profile.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.install_packages</span>(<span class="st">&quot;data/packages/MolgenisArmadillo_1.1.0.9000.tar.gz&quot;</span>, <span class="at">profile =</span> <span class="st">&quot;exposome&quot;</span>)</span></code></pre></div>
 <p>You can install multiple packages as well by specifying a vector</p>
@@ -177,20 +168,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2>Whitelist packages</h2>
 <p>To be able to use new packages in the Armadillo you need to add them to the whitelist. You can do this by executing the following method.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.whitelist_packages</span>(<span class="st">&quot;MolgenisArmadillo&quot;</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Attempting to whitelist package [ &#39;MolgenisArmadillo&#39; ]</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Package [ &#39;MolgenisArmadillo&#39; ] added to the whitelist</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Packages whitelisted:</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  * [ &#39;dsBase&#39; ]</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  * [ &#39;MolgenisArmadillo&#39; ]</span></span></code></pre></div>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in armadillo.whitelist_packages(&quot;MolgenisArmadillo&quot;): could not find function &quot;armadillo.whitelist_packages&quot;</span></span></code></pre></div>
 <p>You are able to whilist mulitple packages as well using the following line:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.whitelist_packages</span>(<span class="fu">c</span>(<span class="st">&quot;MolgenisArmadillo&quot;</span>, <span class="st">&quot;dsBase&quot;</span>))</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Attempting to whitelist package [ &#39;MolgenisArmadillo&#39; ]</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Package [ &#39;MolgenisArmadillo&#39; ] added to the whitelist</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Attempting to whitelist package [ &#39;dsBase&#39; ]</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Package [ &#39;dsBase&#39; ] added to the whitelist</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Packages whitelisted:</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  * [ &#39;dsBase&#39; ]</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  * [ &#39;MolgenisArmadillo&#39; ]</span></span></code></pre></div>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in armadillo.whitelist_packages(c(&quot;MolgenisArmadillo&quot;, &quot;dsBase&quot;)): could not find function &quot;armadillo.whitelist_packages&quot;</span></span></code></pre></div>
 </div>
 
 

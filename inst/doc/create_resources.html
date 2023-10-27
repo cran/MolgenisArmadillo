@@ -26,7 +26,6 @@
     </style>
 
 
-
 <style type="text/css">
   code {
     white-space: pre;
@@ -108,20 +107,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    var j = 0;
-    while (j < rules.length) {
+    for (var j = 0; j < rules.length; j++) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
-        j++;
-        continue;
-      }
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') {
-        j++;
-        continue;
-      }
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -150,14 +142,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MolgenisArmadillo)</span></code></pre></div>
-<p>If you want to perform “omics”-like you need to upload the data to perform the resources. Within the Armadillo you can upload files up to 5TB. If you upload the data you can assign the data with the <code>s3.file.resourcer</code> package.</p>
+<p>If you want to perform “omics”-like analyses you probably need to upload data (resources). By default Armadillo supports file uploads up to 500MB. If you need to upload larger resources, please contact <a href="mailto:molgenis-support@umcg.nl" class="email">molgenis-support@umcg.nl</a>.</p>
 <p>There are 2 roles you can assume using the package. The datamanager role and the researcher role.</p>
 <div id="datamanager" class="section level2">
 <h2>Datamanager</h2>
 <p>The datamanager needs to make the data available to the researchers. Besides this you need to create the resources to access the data.</p>
+</div>
+<div id="researcher" class="section level2">
+<h2>Researcher</h2>
+<p>The researcher can call DataSHIELD analysis methods on the data uploaded by the datamanager.</p>
 <div id="upload-the-data" class="section level3">
 <h3>Upload the data</h3>
-<p>You need to access the Minio webinterface to be able to access the resource.</p>
+<p>As a datamanager you need to access the Armadillo webinterface to be able to access the resource.</p>
 <ol style="list-style-type: decimal">
 <li>We are using data from the following sources:</li>
 </ol>
@@ -166,60 +162,43 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="https://github.com/isglobal-brge/brge_data_large/blob/master/data/gse66351_2.rda" class="uri">https://github.com/isglobal-brge/brge_data_large/blob/master/data/gse66351_2.rda</a></li>
 </ul>
 <ol start="2" style="list-style-type: decimal">
-<li>Login via ELIXIR</li>
-<li>Create a bucket with the prefix <code>shared-</code>. For example <code>shared-omics</code></li>
-<li>Upload the omics data to a folder. For example <code>ewas</code>. You will get something like this <code>shared-omics/ewas/gse66351_1.rda</code></li>
+<li>Login with your institute account.</li>
+<li>Create a project. For example <code>omics</code>.</li>
+<li>Click on the edit project button to the right of the name of your project.</li>
+<li>Create a new folder for your data. For example <code>ewas</code>.</li>
+<li>Click on the “Select a file to upload” button or drag your file to upload to the box and click on “Upload”. Upload the omics data.</li>
 </ol>
-<p>Done!</p>
 </div>
-<div id="upload-the-resources" class="section level3">
-<h3>Upload the resources</h3>
-<p>You first need to login to the Armadillo (as <code>superuser</code>)</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.login</span>(<span class="st">&quot;https://armadillo.dev.molgenis.org&quot;</span>,</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;https://armadillo-minio.dev.molgenis.org&quot;</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;We&#39;re opening a browser so you can log in with code NCN8FY&quot;</span></span></code></pre></div>
+<div id="upload-the-resources-in-rstudio" class="section level3">
+<h3>Upload the resources (in Rstudio)</h3>
+<p>A second option to upload data (resources) is on the <a href="https://lifecycle.analysis.molgenis.org/">Central Analysis Server (CAS)</a> within Rstudio As datamanager you first need to login to Armadillo (as <code>superuser</code>)</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.login</span>(<span class="st">&quot;https://armadillo-demo.molgenis.net/&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;We&#39;re opening a browser so you can log in with code 92B64Y&quot;</span></span></code></pre></div>
 <div id="install-prerequisites" class="section level4">
 <h4>Install prerequisites</h4>
-<p>If you want to install a package on the Armadillo Rserver you can execute the following endpoint. The selected profile is always <code>default</code> if none is specified.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;resourcer&quot;</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(resourcer)</span></code></pre></div>
+<p>If you want to install a package on the Armadillo Rserver you can execute the following. The selected profile is always <code>default</code> if none is specified. If your profile doesn’t have the <code>resourcer</code> package installed, install it:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(resourcer)</span></code></pre></div>
 </div>
 <div id="create-resources" class="section level4">
 <h4>Create resources</h4>
-<p>In order to be able to asign the data uploaded in the Minio you need to create the resources as well.</p>
+<p>In order to be able to assign the data uploaded in the armadillo you need to create the resources as well. The data files you uploaded to armadillo, can be retrieved via the following URL: <code>yoururl + /storage/projects/{project name}/objects/{folder name}%2F{filename}</code> an example is: <code>https://armadillo-demo.molgenis.net/storage/projects/omics/objects/ewas%2Fgse66351_1.rda</code>. Here the URL is <code>https://armadillo-demo.molgenis.net/</code>, the project name is <code>omics</code>, the folder is <code>ewas</code> and the name of the data file is <code>gse66351_1.rda</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>resGSE1 <span class="ot">&lt;-</span> resourcer<span class="sc">::</span><span class="fu">newResource</span>(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&quot;GSE66351_1&quot;</span>,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">url =</span> <span class="st">&quot;s3+http://armadillo-minio:9000/shared-omics/ewas/gse66351_1.rda&quot;</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">identity =</span> <span class="st">&quot;molgenis&quot;</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">secret =</span> <span class="st">&quot;molgenis&quot;</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">&quot;ExpressionSet&quot;</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>resGSE2 <span class="ot">&lt;-</span> resourcer<span class="sc">::</span><span class="fu">newResource</span>(</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&quot;GSE66351_1&quot;</span>,</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">url =</span> <span class="st">&quot;s3+http://armadillo-minio:9000/shared-omics/ewas/gse66351_1.rda&quot;</span>,</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">identity =</span> <span class="st">&quot;molgenis&quot;</span>,</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">secret =</span> <span class="st">&quot;molgenis&quot;</span>,</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">&quot;ExpressionSet&quot;</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.create_project</span>(<span class="st">&quot;omics&quot;</span>)</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Created project &#39;omics&#39;</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.upload_resource</span>(<span class="at">project=</span><span class="st">&quot;omics&quot;</span>, <span class="at">folder=</span><span class="st">&quot;ewas&quot;</span>, <span class="at">resource =</span> resGSE1, <span class="at">name =</span> <span class="st">&quot;GSE66351_1&quot;</span>)</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                 </span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>                                                                                           <span class="er">|</span>   <span class="dv">0</span>%</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                 </span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="er">|===========================================================================================|</span> <span class="dv">100</span>%</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded ewas/GSE66351_1</span></span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.upload_resource</span>(<span class="at">project=</span><span class="st">&quot;omics&quot;</span>, <span class="at">folder=</span><span class="st">&quot;ewas&quot;</span>, <span class="at">resource =</span> resGSE2, <span class="at">name =</span> <span class="st">&quot;GSE66351_2&quot;</span>)</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                 </span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>                                                                                           <span class="er">|</span>   <span class="dv">0</span>%</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                                                 </span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>  <span class="er">|===========================================================================================|</span> <span class="dv">100</span>%</span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded ewas/GSE66351_2</span></span></code></pre></div>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">url =</span> <span class="st">&quot;https://armadillo-demo.molgenis.net/storage/projects/omics/objects/ewas%2Fgse66351_1.rda&quot;</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">&quot;ExpressionSet&quot;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>resGSE2 <span class="ot">&lt;-</span> resourcer<span class="sc">::</span><span class="fu">newResource</span>(</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&quot;GSE66351_1&quot;</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">url =</span> <span class="st">&quot;https://armadillo-demo.molgenis.net/storage/projects/omics/objects/ewas%2Fgse66351_1.rda&quot;</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">format =</span> <span class="st">&quot;ExpressionSet&quot;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.upload_resource</span>(<span class="at">project=</span><span class="st">&quot;omics&quot;</span>, <span class="at">folder=</span><span class="st">&quot;ewas&quot;</span>, <span class="at">resource =</span> resGSE1, <span class="at">name =</span> <span class="st">&quot;GSE66351_1&quot;</span>)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded ewas/GSE66351_1</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.upload_resource</span>(<span class="at">project=</span><span class="st">&quot;omics&quot;</span>, <span class="at">folder=</span><span class="st">&quot;ewas&quot;</span>, <span class="at">resource =</span> resGSE2, <span class="at">name =</span> <span class="st">&quot;GSE66351_2&quot;</span>)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Compressing...</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Uploaded ewas/GSE66351_2</span></span></code></pre></div>
 <p>The data is now available for researcher to assign.</p>
 </div>
 </div>
