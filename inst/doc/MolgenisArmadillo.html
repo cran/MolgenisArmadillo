@@ -146,9 +146,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="login" class="section level2">
 <h2>Login</h2>
 <p>In order to access the files as a data manager, you need to log in. The login method needs the URLs of the Armadillo server and the MinIO fileserver. It will open a browser window where you can identify yourself with the ID provider.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.login</span>(<span class="st">&quot;https://armadillo.test.molgenis.org&quot;</span>,</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;https://armadillo-minio.test.molgenis.org&quot;</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in armadillo.login(&quot;https://armadillo.test.molgenis.org&quot;, &quot;https://armadillo-minio.test.molgenis.org&quot;): unused argument (&quot;https://armadillo-minio.test.molgenis.org&quot;)</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.login</span>(<span class="st">&quot;https://armadillo-demo.molgenis.net/&quot;</span>)</span></code></pre></div>
 <p>It will create a session and store the credentials in the environment.</p>
 </div>
 <div id="structure" class="section level2">
@@ -181,12 +179,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Created project &#39;cohort1&#39;</span></span></code></pre></div>
 <p>Secondly we will load the table(s) we want to upload to Armadillo in the R-environment. We have test data which is in <code>arrow</code> format, the upload will take any object that has a table like structure to upload into the Armadillo. This can be SPSS, STATA, SAS or R-based data as well.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(arrow)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># load the core data</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>nonrep <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(<span class="st">&quot;data/core/nonrep.parquet&quot;</span>)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>yearlyrep <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(<span class="st">&quot;data/core/yearlyrep.parquet&quot;</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>monthlyrep <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(<span class="st">&quot;data/core/monthlyrep.parquet&quot;</span>)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>trimesterrep <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(<span class="st">&quot;data/core/trimesterrep.parquet&quot;</span>)</span></code></pre></div>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Attaching package: &#39;arrow&#39;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; The following object is masked from &#39;package:utils&#39;:</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     timestamp</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># load the core data</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>nonrep <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(<span class="st">&quot;data/core/nonrep.parquet&quot;</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>yearlyrep <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(<span class="st">&quot;data/core/yearlyrep.parquet&quot;</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>monthlyrep <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(<span class="st">&quot;data/core/monthlyrep.parquet&quot;</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>trimesterrep <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_parquet</span>(<span class="st">&quot;data/core/trimesterrep.parquet&quot;</span>)</span></code></pre></div>
 <p>The third step is determining the second level, which contains in this case the datamodel-version the type of variables and the data-version.</p>
 <p>y_y-#variable-type#-x_x</p>
 <p>y_y = datamodel version x_x = data version</p>
@@ -224,19 +227,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>There are helper functions to help you determine what is in the storage server. You can list projects and tables to what’s in the storage.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># listing tables per project</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.list_projects</span>()</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;longitools&quot;   &quot;genr&quot;         &quot;gecko&quot;        &quot;omics&quot;        &quot;test&quot;         &quot;trajectories&quot; &quot;inma&quot;        </span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [8] &quot;cohort1&quot;      &quot;study1&quot;</span></span></code></pre></div>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;longitools&quot;   &quot;genr&quot;         &quot;gecko&quot;        &quot;test&quot;         &quot;omics&quot;       </span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  [6] &quot;trajectories&quot; &quot;inma&quot;         &quot;subset13&quot;     &quot;cohort1&quot;      &quot;study1&quot;</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># listing tables per project</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">armadillo.list_tables</span>(<span class="st">&quot;cohort1&quot;</span>)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;cohort1/2_1-core-1_0/trimesterrep&quot; &quot;cohort1/2_1-core-1_0/nonrep&quot;       &quot;cohort1/2_1-core-1_0/yearlyrep&quot;   </span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [4] &quot;cohort1/2_1-core-1_0/monthlyrep&quot;   &quot;cohort1/1_1-outcome-1_0/nonrep&quot;    &quot;cohort1/1_1-outcome-1_0/yearlyrep&quot;</span></span></code></pre></div>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;cohort1/2_1-core-1_0/trimesterrep&quot; &quot;cohort1/2_1-core-1_0/nonrep&quot;      </span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3] &quot;cohort1/2_1-core-1_0/yearlyrep&quot;    &quot;cohort1/2_1-core-1_0/monthlyrep&quot;  </span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [5] &quot;cohort1/1_1-outcome-1_0/nonrep&quot;    &quot;cohort1/1_1-outcome-1_0/yearlyrep&quot;</span></span></code></pre></div>
 <p>You can download the data in the R-environment as well.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># download table to local R environment</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>trimesterrep <span class="ot">&lt;-</span> <span class="fu">armadillo.load_table</span>(<span class="st">&quot;cohort1&quot;</span>, <span class="st">&quot;2_1-core-1_0&quot;</span>, <span class="st">&quot;trimesterrep&quot;</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># check the column names from the local environment</span></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(trimesterrep)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;row_id&quot;        &quot;child_id&quot;      &quot;age_trimester&quot; &quot;smk_t&quot;         &quot;alc_t&quot;</span></span></code></pre></div>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;row_id&quot;        &quot;child_id&quot;      &quot;age_trimester&quot; &quot;smk_t&quot;        </span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [5] &quot;alc_t&quot;</span></span></code></pre></div>
 <p>Now you can also take a look at the files in the user interface of the MinIO fileserver if you open the MinIO server URL in a browser window.</p>
 </div>
 <div id="deleting-the-data" class="section level2">

@@ -151,7 +151,7 @@
   function(project, folder, name, new_folder = folder, new_name = name,
            extension) {
     if (folder == new_folder &&
-          name == new_name) {
+      name == new_name) {
       stop("Cannot move table or resource onto itself.", call. = FALSE)
     }
     .check_full_name(new_folder, new_name)
@@ -194,7 +194,7 @@
 #'
 #' @importFrom httr GET
 #' @noRd
-.load_object <- function(project, folder, name, load_function, extension) {
+.load_object <- function(project, folder, name, load_function, extension, load_arg) {
   file <- tempfile()
   on.exit(unlink(file))
 
@@ -211,7 +211,11 @@
 
   writeBin(content(response, "raw"), file)
 
-  load_function(file)
+  if (missing(load_arg)) {
+    load_function(file)
+  } else {
+    load_function(file, load_arg)
+  }
 }
 
 #' Get storage API object URI.
@@ -226,8 +230,26 @@
 #' @noRd
 .to_object_uri <- function(project, object_name, extension) {
   full_name <- paste0(object_name, extension)
-  paste0("/storage/projects/",
-         project,
-         "/objects/",
-         utils::URLencode(full_name, reserved = TRUE))
+  paste0(
+    "/storage/projects/",
+    project,
+    "/objects/",
+    utils::URLencode(full_name, reserved = TRUE)
+  )
+}
+
+#' Helperfunction that checks if a file exists in armadillo
+#'
+#' @param project project name
+#' @param object_name folder/name of file
+#' @param extension the extension of the file
+#'
+#' @return TRUE if the file exists, FALSE if it doesnt
+#'
+#' @noRd
+.object_exists <- function(project, object_name, extension) {
+  response <- httr::HEAD(paste0(.get_url(), 
+                                .to_object_uri(project, object_name, extension)),
+                         config = c(httr::add_headers(.get_auth_header())))
+  response$status_code == 204
 }
