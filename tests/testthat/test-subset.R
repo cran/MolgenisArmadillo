@@ -13,7 +13,7 @@ test_that("read_view_reference handles missing .csv file", {
 })
 
 test_that("read_view_reference handles existing .csv file", {
-  expect_is(
+  expect_s3_class(
     with_mocked_bindings(
       .read_view_reference("test_path"),
       "read_csv" = function(file, show_col_types, trim_ws) example_csv
@@ -79,10 +79,10 @@ test_that("It nests the 'target_vars' column in the dataframe", {
     source_table = c("table1", "table2"),
     variable = c("var1", "var2")
   )
-
+  
   subset_ref <- as_tibble(df)
   formatted_df <- .format_reference(subset_ref)
-  expect_is(formatted_df$target_vars, "list")
+  expect_equal(class(formatted_df$target_vars), "list")
   expect_equal(length(formatted_df$target_vars), nrow(formatted_df))
 })
 
@@ -117,7 +117,7 @@ test_that("It returns a tibble when a valid .csv file path is provided", {
     "read_csv" = function(file, show_col_types, trim_ws) example_csv
   )
 
-  expect_is(output_df, "tbl_df")
+  expect_s3_class(output_df, "tbl_df")
   expect_true(all(c("source_folder", "source_table", "target_vars", "target_folder", "target_table") %in% colnames(output_df)))
   expect_equal(nrow(output_df), 3)
 })
@@ -313,8 +313,7 @@ test_that("It builds the API request object correctly", {
       ".make_post_url" = function(target_project) "mocked_post_url",
       ".get_auth_header" = function() structure("Basic YWRtaW46YWRtaW4=", names = "Authorization")
     ),
-    api_data$expected_req,
-    fixed = T
+    api_data$expected_req
   )
 })
 
@@ -334,10 +333,11 @@ response_list <- list(api_data$expected_response, api_data$expected_response)
 test_that(".loop_api_request loops through API requests for each subset", {
   expect_equal(
     with_mocked_bindings(
-      .loop_api_request(two_row_def, "test_source_project", "test_target_project"),
+      .loop_api_request(two_row_def, "test_source_project", "test_target_project", FALSE),
       ".make_post_url" = function(target_project) "mocked_post_url",
       ".get_auth_header" = function() structure("Basic YWRtaW46YWRtaW4=", names = "Authorization"),
-      "req_perform" = function(req) api_data$expected_response
+      "req_perform" = function(req) api_data$expected_response, 
+      ".check_missing_vars_message" = function(result) {FALSE}
     ),
     response_list
   )
@@ -407,8 +407,7 @@ failure_message_list <- list(
 test_that(".format_failure_message formats failure messages for display", {
   expect_equal(
     .format_failure_message(failure),
-    failure_message_list,
-    fixed = T
+    failure_message_list
   )
 })
 
@@ -482,20 +481,11 @@ test_that("armadillo.subset_definition should return proper
 })
 
 
-test_that("armadillo.subset_definition will throw error when vars are NULL", {
-  df <- data.frame(
-    folder = c("outcome", "outcome", "outcome"),
-    table = c("yearlyrep", "yearlyrep", "yearlyrep"),
-    variable = c("row_id", "child_id", "int_raw_3")
+test_that("armadillo.subset_definition will throw error when .csv file doesn't exist", {
+  expect_error(
+    armadillo.subset_definition(NULL, NULL), 
+    "You must provide a .csv file with variables and tables to subset"
   )
-
-  with_mock(read.csv = mock(df), {
-    message <- paste0(
-      "You must provide a .csv file with variables and tables ",
-      "to subset"
-    )
-    expect_error(armadillo.subset_definition(NULL), message, fixed = TRUE)
-  })
 })
 
 test_that("armadillo.subset fails if source project is NULL", {
@@ -545,4 +535,160 @@ test_that(".add_slash_if_missing adds a slash to the end of the URL if not prese
     "https://armadillo-demo.molgenis.net/"
   )
   
+})
+
+test_that(".check_backend_version throws an error if version is below 4.7.1", {
+  stub_request('get', uri = 'https://test.nl/actuator/info')
+  info_from_api <- list(
+    build = list(
+      artifact = "molgenis-armadillo",
+      name = "molgenis-armadillo",
+      time = "2024-10-22T10:50:48.110Z",
+      version = "4.1.3",
+      group = "org.molgenis"
+    ),
+    auth = list(
+      issuerUri = "https://lifecycle-auth.molgenis.org",
+      clientId = "b1b52e3c-4505-4326-993b-3d99df64ef6c"
+    )
+  )
+  expect_error(
+    with_mocked_bindings(
+      .check_backend_version(),
+      resp_body_json = function(api_response){info_from_api},
+      request = function(url){},
+      req_perform = function(object){}
+    )
+  )
+})
+
+test_that(".check_backend_version doesn't throw an error if version is equal or above 4.7.1", {
+  stub_request('get', uri = 'https://test.nl/actuator/info')
+  info_from_api <- list(
+    build = list(
+      artifact = "molgenis-armadillo",
+      name = "molgenis-armadillo",
+      time = "2024-10-22T10:50:48.110Z",
+      version = "4.7.1",
+      group = "org.molgenis"
+    ),
+    auth = list(
+      issuerUri = "https://lifecycle-auth.molgenis.org",
+      clientId = "b1b52e3c-4505-4326-993b-3d99df64ef6c"
+    )
+  )
+  expect_silent(
+    with_mocked_bindings(
+      .check_backend_version(),
+      resp_body_json = function(api_response){info_from_api},
+      request = function(url){},
+      req_perform = function(object){}
+    )
+  )
+})
+
+test_that(".extract missing vars extracts variable names from put object", {
+  expect_equal(
+    with_mocked_bindings(
+      .extract_missing_vars(result), 
+      resp_body_json = function(result) {list(message = "Variables '[var_1, var_2, var_3]' do not exist in object 'lifecycle/core/nonrep'")}
+    ), 
+    c("var_1", "var_2", "var_3")
+  )
+})
+
+.print_missing_vars_message <- function(missing_vars, source_table, target_folder, target_table)
+  
+test_that(".print_missing_vars_message prints correct messages", {
+  missing_vars <- c("var1", "var2", "var3")
+  source_table <- "source_table"
+  target_folder <- "target_folder"
+  target_table <- "target_table"
+  
+  expect_message(
+    .print_missing_vars_message(missing_vars, source_table),
+    "Variable\\(s\\) 'var1, var2, and var3' do not exist in object 'source_table'.",
+    fixed = FALSE
+  )
+  
+  expect_message(
+    .print_missing_vars_message(missing_vars, source_table, target_folder, target_table),
+    "View was created without these variables",
+    fixed = TRUE
+  )
+})
+
+test_that(".define_non_missing_vars filters out missing variables from a tibble", {
+  target_vars <- tibble(variable = c("var1", "var2", "var3", "var4"))
+  missing_vars <- c("var2", "var4")
+  result <- .define_non_missing_vars(target_vars, missing_vars)
+  expected <- tibble(variable = c("var1", "var3"))
+  expect_equal(result, expected)
+})
+
+test_that(".check_missing_vars_message returns TRUE where 404 and target text present", {
+  expect_equal(
+    with_mocked_bindings(
+      .check_missing_vars_message(result), 
+      resp_status = function(result) {404},
+      resp_body_json = function(result) {list(message = "Variables '[var_1, var_2, var_3]' do not exist in object 'lifecycle/core/nonrep'")}
+    ), 
+    TRUE
+  ) 
+})
+
+test_that(".check_missing_vars_message returns FALSE where 404 present but target text not", {
+  expect_equal(
+    with_mocked_bindings(
+      .check_missing_vars_message(result), 
+      resp_status = function(result) {404},
+      resp_body_json = function(result) {list(message = "Other error message")}
+    ), 
+    FALSE
+  ) 
+})
+
+test_that(".check_missing_vars_message returns FALSE where either 404 or target text not present", {
+  expect_equal(
+    with_mocked_bindings(
+      .check_missing_vars_message(result), 
+      resp_status = function(result) {204},
+      resp_body_json = function(result) {list(message = "Variables '[var_1, var_2, var_3]' do not exist in object 'lifecycle/core/nonrep'")}
+    ), 
+    FALSE
+  ) 
+  
+  expect_equal(
+    with_mocked_bindings(
+      .check_missing_vars_message(result), 
+      resp_status = function(result) {204},
+      resp_body_json = function(result) {list(message = "Other text that we don't care about")}
+    ), 
+    FALSE
+  ) 
+})
+
+test_that(".stop_if_all_missing aborts when all variables are missing", {
+  missing_vars <- c("var1", "var2", "var3")
+  source_table <- "source_data"
+  updated_target_vars <- data.frame(variable = c("var1", "var2", "var3"))
+  source_folder <- "data_folder"
+  target_table <- "target_data"
+  
+  expect_error(
+    .stop_if_all_missing(missing_vars, source_table, updated_target_vars, source_folder, target_table),
+    "None of the variables specified for target table 'target_data' exist in 'data_folder/source_data'."
+  )
+})
+
+test_that(".stop_if_all_missing does not abort when some variables are present", {
+  missing_vars <- c("var1", "var2")
+  source_table <- "source_data"
+  updated_target_vars <- data.frame(variable = c("var1", "var2", "var3"))
+  source_folder <- "data_folder"
+  target_table <- "target_data"
+  
+  expect_silent(
+    .stop_if_all_missing(missing_vars, source_table, updated_target_vars, source_folder, target_table)
+  )
 })

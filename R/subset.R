@@ -18,6 +18,9 @@
 #' @param target_table table to upload subset to. Compulsory if input_source = 'arguments'.
 #' @param target_vars variables from `source_table` to include in the view.
 #' Compulsory if input_source = 'arguments'.
+#' @param strict Boolean specifying whether to create subset if one or more target variables do not 
+#' exist in the target data. Option FALSE will throw and error, option TRUE (default) creates subset 
+#' and return a warning
 #' @param new_project Deprecated: use \code{target_project} instead
 #' @param dry_run Defunct: previously enabgled dry-run to check which variables are missing
 #' @importFrom cli cli_alert_success
@@ -37,12 +40,13 @@
 armadillo.subset <- function(input_source = NULL, subset_def = NULL, source_project = NULL, source_folder = NULL,
                              source_table = NULL, target_project = NULL, target_folder = NULL,
                              target_table = NULL, target_vars = NULL, new_project = NULL,
-                             dry_run = NULL) {
+                             dry_run = NULL, strict = FALSE) {
   .check_args_valid(
     input_source, subset_def, source_project, source_folder, source_table,
     target_project, target_folder, target_table, target_vars, new_project,
     dry_run
   )
+  .check_backend_version()
 
   if (input_source == "arguments") {
     subset_def <- .create_subset_def_from_arguments(
@@ -52,7 +56,7 @@ armadillo.subset <- function(input_source = NULL, subset_def = NULL, source_proj
   }
 
   armadillo.create_project(target_project, overwrite_existing = "no")
-  posts <- .loop_api_request(subset_def, source_project, target_project)
+  posts <- .loop_api_request(subset_def, source_project, target_project, strict)
   api_post_summary <- .format_api_posts(posts, subset_def)
   api_post_summary_split <- .split_success_failure(api_post_summary)
 
@@ -120,7 +124,6 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @importFrom readr read_csv
 .read_view_reference <- function(reference_csv) {
   variable <- subset_vars <- NULL
-
   if (is.null(reference_csv)) {
     stop("You must provide a .csv file with variables and tables to subset")
   }
@@ -153,6 +156,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #'
 #' @param reference Reference dataframe
 #' @importFrom purrr map_lgl
+#' @importFrom dplyr %>%
 #' @noRd
 .check_reference_columns <- function(reference) {
   if (!all(c("source_folder", "source_table", "variable") %in% colnames(reference))) {
@@ -177,7 +181,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' Formats the reference file that has been imported
 #'
 #' @param subset_ref Subset reference dataframe
-#' @importFrom dplyr mutate
+#' @importFrom dplyr mutate %>%
 #' @importFrom tidyr nest
 #' @noRd
 .format_reference <- function(subset_ref) {
@@ -284,6 +288,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @param target_table Table to upload subset to.
 #' @param target_vars  Variables from `source_table` to include in the view
 #' @importFrom httr2 request req_body_json req_headers
+#' @importFrom dplyr %>%
 #' @noRd
 .make_api_request <- function(source_project, source_folder, source_table, target_project, target_folder,
                               target_table, target_vars) {
@@ -294,8 +299,8 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
   )
   header_content <- .make_headers()
 
-  req <- request(post_url) |>
-    req_body_json(body_content) |>
+  req <- request(post_url) %>%
+    req_body_json(body_content) %>%
     req_headers(!!!header_content)
   return(req)
 }
@@ -362,12 +367,12 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @param request Request object
 #'
 #' @importFrom httr2 req_perform req_error
+#' @importFrom dplyr %>%
 #' @noRd
 .put_api_request <- function(request) {
-  response <- request |>
-    req_error(is_error = \(resp) FALSE) |>
+  response <- request %>%
+    req_error(is_error = \(resp) FALSE) %>%
     req_perform()
-
   return(response)
 }
 
@@ -378,15 +383,30 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #' @param target_project Project to upload subset to
 #'
 #' @importFrom purrr pmap
+#' @importFrom dplyr %>%
 #' @noRd
-.loop_api_request <- function(subset_ref, source_project, target_project) {
+.loop_api_request <- function(subset_ref, source_project, target_project, strict) {
   subset_ref %>%
     pmap(function(source_folder, source_table, target_folder, target_table, target_vars) {
-      .make_api_request(
-        source_project, source_folder, source_table, target_project,
-        target_folder, target_table, unlist(target_vars)
-      ) |>
-        .put_api_request()
+        result <- .make_api_request(
+          source_project, source_folder, source_table, target_project,
+          target_folder, target_table, unlist(target_vars)
+        ) %>%
+          .put_api_request()
+        missing_vars_exist <- .check_missing_vars_message(result)
+        if(missing_vars_exist){
+          missing_vars <- .extract_missing_vars(result)
+          .stop_if_all_missing(missing_vars, source_table, target_vars, source_folder, target_table)
+        }
+        if(missing_vars_exist & strict == F){
+          .print_missing_vars_message(missing_vars, source_table, target_folder, target_table)
+          result <- .make_api_request(
+            source_project, source_folder, source_table, target_project,
+            target_folder, target_table, unlist(.define_non_missing_vars(target_vars, missing_vars))
+          ) %>%
+            .put_api_request()
+        } 
+      return(result)
     })
 }
 
@@ -394,6 +414,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #'
 #' @importFrom purrr map_int
 #' @importFrom httr2 resp_status
+#' @importFrom dplyr %>%
 #' @noRd
 .get_status <- function(posts) {
   status <- posts %>%
@@ -409,6 +430,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #'
 #' @importFrom purrr map
 #' @importFrom httr2 resp_body_json
+#' @importFrom dplyr %>%
 #' @noRd
 .get_failure_messages <- function(posts) {
   messages <- posts %>%
@@ -442,7 +464,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #'
 #' @param api_post_summary API response summary
 #'
-#' @importFrom dplyr filter
+#' @importFrom dplyr filter %>%
 #' @noRd
 .split_success_failure <- function(api_post_summary) {
   success <- failure <- status <- NULL
@@ -478,6 +500,7 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #'
 #' @noRd
 #' @importFrom purrr pmap
+#' @importFrom dplyr %>%
 .format_success_message <- function(success) {
   success_message <- success %>%
     pmap(function(target_folder, target_table, status, ...) {
@@ -511,8 +534,139 @@ armadillo.subset_definition <- function(reference_csv = NULL, vars = NULL) { # n
 #'
 #' @importFrom purrr walk
 #' @importFrom cli cli_alert_success
+#' @importFrom dplyr %>%
 #' @noRd
 .handle_success_messages <- function(successes) {
   success_neat <- .format_success_message(successes)
   success_neat %>% walk(cli_alert_success)
+}
+
+#' Check Armadillo Backend Version
+#' This function checks if the Armadillo backend version meets the minimum required version (`4.7.1`).
+#' If the version is below the required threshold, an error is raised with instructions for upgrading.
+#' @details
+#' The function retrieves the Armadillo version from the backend API endpoint. If the version is lower than `4.7.1`,
+#' it aborts execution with an informative error message.
+#' @return
+#' This function does not return a value. It either allows execution to continue if the version is valid
+#' or raises an error if the version is too low.
+#' @importFrom cli cli_abort
+#' @importFrom httr2 request req_perform resp_body_json
+
+#' @noRd
+.check_backend_version <- function() {
+  server_url <- .add_slash_if_missing(.get_url())
+  endpoint_request <- request(paste0(server_url, "actuator/info")) 
+  armadillo_info <- req_perform(endpoint_request)
+  version <- resp_body_json(armadillo_info)$build$version
+  if(numeric_version(version) < numeric_version("4.7.1")) {
+    cli::cli_abort(
+      c(
+        "x" = "`armadillo.subset` is only compatible with Armadillo versions 4.7.1 and above", 
+        "i" = "Your Armadillo version is {version}", 
+        "i" = "To upgrade Armadillo please consult the documentation at https://molgenis.github.io/molgenis-service-armadillo/pages/install_management/"),
+      call = NULL)
+  }
+}
+
+#' Extract missing variables from response message
+#'
+#' This function extracts missing variable names from the message field of a response object.
+#' It looks for variable names enclosed in square brackets (e.g., `[var1, var2]`) and returns them 
+#' as a character vector.
+#'
+#' @param result A response object from an `httr2` request.
+#' @return A character vector of missing variable names.
+#' @importFrom httr2 resp_body_json
+#' @importFrom stringr str_extract_all str_split
+#' @importFrom dplyr %>%
+#' @noRd
+.extract_missing_vars <- function(result) {
+  message <- resp_body_json(result)$message
+  str_extract_all(message, "(?<=\\[)[^\\]]+(?=\\])")[[1]] %>%
+    str_split(", ", simplify = FALSE) %>%
+    unlist()
+}
+
+#' Print a message for missing variables
+#'
+#' This function prints a warning message indicating which variables are missing from the source table.
+#'
+#' @param missing_vars A character vector of missing variable names.
+#' @param source_table A character string representing the name of the source table.
+#' @return Invisibly returns NULL after printing the messages.
+#' @importFrom cli cli_inform cli_text
+#' @noRd
+.print_missing_vars_message <- function(missing_vars, source_table, target_folder, target_table) {
+  cli_inform(
+    c(
+      "!" = "Variable(s) '{missing_vars}' do not exist in object '{source_table}'.", 
+      "i" = "Table '{target_folder}/{target_table}' was created without these variables")
+  )
+  cli::cli_text("")
+}
+
+#' Filter out missing variables from a target variable set
+#'
+#' This function removes variables from the target set that are listed as missing.
+#'
+#' @param target_vars A character vector of target variable names.
+#' @param missing_vars A character vector of missing variable names.
+#' @return A character vector of variables that are not missing.
+#' @importFrom dplyr filter %>%
+#' @noRd
+.define_non_missing_vars <- function(target_vars, missing_vars) {
+  variable <- NULL
+  revised_vars <- target_vars %>% dplyr::filter(!variable %in% missing_vars)
+}
+
+#' Check if the response message indicates missing variables
+#'
+#' This function checks if the response status is 404 and if the response message indicates that variables are missing from a specified object.
+#'
+#' @param result A response object from an `httr2` request.
+#'
+#' @return Logical: TRUE if the response message indicates missing variables, FALSE otherwise.
+#'
+#' @importFrom httr2 resp_status resp_body_json
+#' @importFrom stringr str_detect
+#' @noRd
+.check_missing_vars_message <- function(result) {
+  status <- resp_status(result)
+  if(status == 404){
+    message <- resp_body_json(result)$message
+    if(str_detect(message, "do not exist in object")) {
+      return(TRUE)
+    } else {
+      return(FALSE)
+    }
+  } else {
+    return(FALSE)
+  }
+}
+    
+#' Stop Execution if All Variables Are Missing
+#'
+#' This function checks if all specified variables for the target table are missing.
+#' If none of the variables exist in the source data, it aborts execution with an error message.
+#'
+#' @param missing_vars A character vector of variables that are missing from the source table.
+#' @param source_table A character string specifying the name of the source table.
+#' @param updated_target_vars A data frame or list containing the variables specified for the target table.
+#'   The function checks the length of `updated_target_vars$variable` against `missing_vars`.
+#' @param source_folder A character string specifying the folder where the source table is located.
+#' @param target_table A character string specifying the name of the target table.
+#' @importFrom cli cli_abort
+#' @return This function does not return a value. It stops execution and throws an error if all variables are missing.
+#' @noRd
+.stop_if_all_missing <- function(missing_vars, source_table, updated_target_vars, source_folder, target_table) {
+  if (length(missing_vars) == length(updated_target_vars$variable)) {
+    cli::cli_abort(
+      c(
+        "x" = "None of the variables specified for target table '{target_table}' exist in '{source_folder}/{source_table}'.", 
+        "i" = "Please revise your subset definition and try again."
+      ),
+      call = NULL
+    )
+  }
 }
