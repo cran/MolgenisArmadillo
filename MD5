@@ -1,6 +1,6 @@
-dbecbf96d7fe3f748e7e19df3266e05b *DESCRIPTION
+d5d1da593962090f61413ed1bb968784 *DESCRIPTION
 87139716b37ff1d2e8d17dca9981cae4 *NAMESPACE
-89116bedf2e5b76d02c41f163c6cb3a2 *NEWS.md
+1a4d91b8624a2cea1c0050e955adf165 *NEWS.md
 6c099fe1f71b622d966c56b25f308ca3 *R/MolgenisArmadillo-package.R
 104010009c13f587db39ee193f2f0e98 *R/auth.R
 4245a812a448d77513f2f5439ca31e80 *R/names.R
@@ -8,7 +8,7 @@ b29ba1913dd992f8b294dd0ca35f5308 *R/object.R
 2a492d94205adb24cad5e7d5883243de *R/package.R
 e0f7cad073b920c85603028a62e655de *R/project.R
 2df9eb24b93aa21bdba36c35224759ea *R/resource.R
-28aba6522240abdb5d3f254eb3345e42 *R/subset.R
+ea968b4b5df7384930189796b220afa4 *R/subset.R
 b2c47dff1da6296fbc047cf52d573694 *R/table.R
 b32c182a737d1aef116f792e19778eaf *R/utils.R
 c6ada7118d786390e346aacbb2b6f573 *README.md
@@ -62,7 +62,7 @@ c1feb8982c10f3ad102e7b2429936f69 *tests/testthat/setup.R
 7d02361478a4bba8a635eba9b3ea597e *tests/testthat/test-package.R
 5a01231d6c9bce040f1d01894ee0ca82 *tests/testthat/test-project.R
 0c4114b55a0443fddeb3ab3621555d61 *tests/testthat/test-resource.R
-7679c2fac5dd5e78c3a53a9da16a1ce2 *tests/testthat/test-subset.R
+2acfe4f2418d00e914d38dc6c8ab39f5 *tests/testthat/test-subset.R
 d334ff53819fc194d9ed76ba6a9ffa75 *tests/testthat/test-table.R
 ea6261d7ee853c3a37c8205890efcc20 *tests/testthat/test-utils.R
 08f5a919c6a864ac2bf619828fab7511 *vignettes/MolgenisArmadillo.Rmd
