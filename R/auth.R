@@ -1,11 +1,11 @@
 #' Login
 #'
-#' Interactively obtains an id token and uses it to create a session token for
-#' an Armadillo Service
+#' Interactively obtains an access token and uses it to create a session token
+#' for an Armadillo Service
 #'
 #' @param armadillo URL of the Armadillo server,
 #'
-#' @return the id token
+#' @return the access token
 #'
 #' @examples
 #' \dontrun{
@@ -17,11 +17,12 @@
 #'
 #' @export
 armadillo.login <- function(armadillo) { # nolint
-  # Open browser and authenticate with device code
-  token <- armadillo.get_token(armadillo)
+  token <- .get_token(armadillo)
 
   assign("armadillo_url", armadillo, envir = .pkgglobalenv)
   assign("auth_token", token, envir = .pkgglobalenv)
+
+  .check_admin(armadillo)
 
   invisible(token)
 }
@@ -45,29 +46,47 @@ armadillo.login_basic <- function(armadillo, username, password) { # nolint
   assign("armadillo_url", armadillo, envir = .pkgglobalenv)
   assign("auth_username", username, envir = .pkgglobalenv)
   assign("auth_password", password, envir = .pkgglobalenv)
+
+  .check_admin(armadillo)
 }
 
-#' Get ID Token
+#' @rdname MolgenisArmadillo-defunct
+#' @section `armadillo.get_token`:
+#' `r lifecycle::badge("defunct")`
 #'
-#' Get an ID token to log in on an Armadillo server.
+#' For `armadillo.get_token`, use
+#' \code{DSMolgenisArmadillo::armadillo.get_credentials()} instead.
+#'
+#' @export
+armadillo.get_token <- function(server) { # nolint
+  .Defunct(
+    new = "armadillo.get_credentials",
+    msg = paste(
+      "'armadillo.get_token()' is defunct. Use 'armadillo.get_credentials()' instead.",
+      "\n\nExample usage:",
+      "\n  credentials <- armadillo.get_credentials(server)",
+      "\n  builder$append(token = credentials@access_token, ...)"
+    )
+  )
+}
+
+#' Get access token for an Armadillo server
 #'
 #' @param server the URL of the Armadillo server
 #'
-#' @return The ID token string
+#' @return The access token string
 #'
 #' @importFrom MolgenisAuth discover device_flow_auth
-#' @importFrom httr GET stop_for_status content
 #'
-#' @keywords internal
-#' @export
-armadillo.get_token <- function(server) { # nolint
+#' @noRd
+.get_token <- function(server) {
   auth_info <- .get_info(server)$auth
   endpoint <- MolgenisAuth::discover(auth_info$issuerUri)
   credentials <- MolgenisAuth::device_flow_auth(
     endpoint,
     auth_info$clientId
   )
-  return(credentials$id_token)
+  return(credentials$access_token)
 }
 
 #' Fetch server info
@@ -83,4 +102,25 @@ armadillo.get_token <- function(server) { # nolint
   response <- httr::GET(info_url)
   httr::stop_for_status(response, task = "fetch server info")
   return(httr::content(response))
+}
+
+#' Check if the logged-in user has admin privileges
+#'
+#' Calls the admin-only /access/projects endpoint. If the server returns 403,
+#' the user is not an admin and an error is raised.
+#'
+#' @param armadillo URL of the Armadillo server
+#'
+#' @noRd
+.check_admin <- function(armadillo) {
+  response <- httr::GET(
+    url = armadillo,
+    path = "/access/projects",
+    config = httr::add_headers(.get_auth_header())
+  )
+  if (response$status_code == 401 || response$status_code == 403) {
+    stop("User does not have admin permissions on this server.",
+      call. = FALSE
+    )
+  }
 }
