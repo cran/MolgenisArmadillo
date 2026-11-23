@@ -1,6 +1,6 @@
-0c60b574ba84bd34369701e104c7a3af *DESCRIPTION
-50636a6dd693d6ef866c98ef35bd74cf *NAMESPACE
-4dbc6b8a147689e4cafc3a0bc12f5531 *NEWS.md
+670b8a4d5fdde782046e55e6e1cd890b *DESCRIPTION
+11c2294182dcbada6f15b8bf06d2ce93 *NAMESPACE
+c5e06aaa4493bd77154f1f3a8840062a *NEWS.md
 e30f3a4dd7ffab614a399977491be33c *R/MolgenisArmadillo-defunct.R
 bf4c9148b3761fb990e5148057342f61 *R/MolgenisArmadillo-package.R
 ab8ecaeadf12bcd367c2e432dfbea4b5 *R/auth.R
@@ -9,11 +9,11 @@ b29ba1913dd992f8b294dd0ca35f5308 *R/object.R
 2a492d94205adb24cad5e7d5883243de *R/package.R
 e0f7cad073b920c85603028a62e655de *R/project.R
 9edabb5d16489b52e56feec2f21de69e *R/resource.R
-d6beda7118d3df159674c8f6f79fffcd *R/subset.R
+17d6c851a04baaa0a3137f4582638801 *R/subset.R
 fa85f3733a45f8983b4fc7a2f47bce1c *R/table.R
 6dc7f8e0fa86970ada7171ca57fb8f4a *R/utils.R
-143d437743314519a8bd20a97e2125cd *README.md
-4bb3e600011dc446a38e9bd426828b79 *build/vignette.rds
+b3e35f18cb9a5f87cb30b320ff87495c *README.md
+a55889bdc4a17675c352abf4607681c4 *build/vignette.rds
 026a1cd25e3e2dbe32a608f9d76149c4 *inst/doc/MolgenisArmadillo.Rmd
 0c487bc1e5f3f31e003b5c834ec4cd27 *inst/doc/MolgenisArmadillo.html
 3660f6fbc418bd215301ebaa8498e528 *inst/doc/create_resources.Rmd
@@ -23,7 +23,7 @@ b2672dba95ce4b3c02891cf2021694db *inst/doc/creating_data_subsets.html
 9e5671b8f4c50c5117928ef40518377c *inst/doc/install_packages.Rmd
 a3eb396015c2fa341fe206188609a744 *inst/doc/install_packages.html
 9eae61f168b95ac79c197d3d38ff32f2 *man/MolgenisArmadillo-defunct.Rd
-5c6cbf0216b2fc63d99967c027529040 *man/MolgenisArmadillo-package.Rd
+035b0ca3be110c9364eaa15b6be115fa *man/MolgenisArmadillo-package.Rd
 529e35560996302f2e40a1395267eae0 *man/armadillo.copy_resource.Rd
 7d0a323ae7dbf7287dbca9aceef48cc7 *man/armadillo.copy_table.Rd
 dcd9e8fb79d37267c12f4dacd49a8b69 *man/armadillo.create_project.Rd
@@ -57,7 +57,7 @@ b465755373f080c28e8af3624cb2cbef *tests/testthat/test-object.R
 7d02361478a4bba8a635eba9b3ea597e *tests/testthat/test-package.R
 5a01231d6c9bce040f1d01894ee0ca82 *tests/testthat/test-project.R
 0c4114b55a0443fddeb3ab3621555d61 *tests/testthat/test-resource.R
-2acfe4f2418d00e914d38dc6c8ab39f5 *tests/testthat/test-subset.R
+05a079666611e69a1a329b3af38bfb4d *tests/testthat/test-subset.R
 d334ff53819fc194d9ed76ba6a9ffa75 *tests/testthat/test-table.R
 348f996b6517ba7e8b518546de1f459c *tests/testthat/test-utils.R
 026a1cd25e3e2dbe32a608f9d76149c4 *vignettes/MolgenisArmadillo.Rmd
